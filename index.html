@@ -186,7 +186,7 @@ details[open] summary{margin-bottom:8px}
       <p id="pj-line"></p>
       <details><summary>How we got this</summary><div class="explain" id="pj-how"></div></details>
     </div>
-    <nav class="toc" aria-label="Sections"><a href="#oct4">Oct 4 result</a><a href="#report">Pollster accuracy</a><a href="#polls">Runoff polls</a><a href="#trend">Poll trend and betting odds</a><a href="#votemath">Vote math and regions</a><a href="#debate">Debate reaction</a><a href="#method">Method</a></nav>
+    <nav class="toc" aria-label="Sections"><a href="#oct4">Oct 4 result</a><a href="#report">Pollster accuracy</a><a href="#polls">Runoff polls</a><a href="#trend">Poll trend and betting odds</a><a href="#votemath">Vote math and regions</a><a href="#states">States and governors</a><a href="#paths">What Lula needs</a><a href="#debate">Debate reaction</a><a href="#method">Method</a></nav>
   </header>
 
   <section id="oct4">
@@ -323,6 +323,27 @@ details[open] summary{margin-bottom:8px}
       <div class="bars" id="regbar"></div>
       <div class="explain" id="regneed"></div>
       <p class="note">How to read it: compare "Oct 4 share" with "Datafolha now". That shows who gained in each region since the first round. "Projected votes" go up for both candidates everywhere because they now include the 9.3 million votes from eliminated candidates and the change in turnout, so look at the shares, not the vote totals. Datafolha reports Norte and Centro-Oeste together, so both use the same number. National polls don't publish state results; state-level numbers would need separate state polls (São Paulo, Minas Gerais, Rio and Bahia hold about 45% of voters).</p>
+    </div>
+  </section>
+
+  <section id="states">
+    <h2>States and governors</h2>
+    <p class="muted">On Oct 4, 21 of the 27 states already elected their governor, a record. Voters there have only the presidential race left, which usually means more people stay home.</p>
+    <div class="card">
+      <div class="stats" id="govstats"></div>
+      <div class="explain"><p><b>Does it help one side?</b> Less than it seems. The 21 decided states include Lula's strongest (Bahia, Piauí, Ceará, Pernambuco, Maranhão) and Flávio's biggest (São Paulo, Minas Gerais, Rio, Paraná, Rio Grande do Sul, Santa Catarina, Goiás), so where people stay home roughly cancels out: on its own it's worth only a few hundredths of a point. What matters more is who stays home. Poorer, less engaged voters skip runoffs most, and they lean Lula. Our "more of Lula's voters stay home" scenario in the vote math puts that at about 0.3 points for Flávio. Voting is compulsory in Brazil, which keeps the gap between richer and poorer turnout smaller than in countries where it's optional.</p></div>
+      <details><summary>See all 27 states</summary><div class="tbl" style="margin-top:8px"><table id="t6"></table></div></details>
+      <p class="note">Governor positions as reported on Oct 18. The 6 runoffs keep turnout up in those places; 4 of them lean Flávio in the presidential race (DF, Espírito Santo, Acre, Tocantins) and 2 lean Lula (Amazonas, Rio Grande do Norte).</p>
+    </div>
+  </section>
+
+  <section id="paths">
+    <h2>What Lula needs to win</h2>
+    <p class="muted">Each row is one way Lula could close the gap on its own, worked out from the current numbers on this page. It updates with every new poll.</p>
+    <div class="card">
+      <div class="stats" id="pathstats"></div>
+      <div class="tbl"><table id="t7"></table></div>
+      <div class="explain" id="pathsum"></div>
     </div>
   </section>
 
@@ -768,6 +789,7 @@ function projection(){
   const mom=0.5*slope*days;
   const p=base+mom, pf=ncdf((p-50)/sd)*100, lo=p-1.28*sd, hi=p+1.28*sd;
   const tot=typ[0]+typ[1];
+  window.PJ={pAdj,pVM,pReg,base,slope,days,mom,p,pf,sd,F0,L0,typ,tF,tL};
   document.getElementById("pj-f").textContent=f1(p)+"%";
   document.getElementById("pj-l").textContent=f1(100-p)+"%";
   document.getElementById("pj-fv").textContent=`≈ ${f1(tot*p/100)}M votes`;
@@ -785,6 +807,64 @@ function projection(){
     <li><b>Projection:</b> ${f1(base)} ${mom>=0?"+":"−"} ${f1(Math.abs(mom))} = <b class="f">Flávio ${f1(p)}%</b>, <b class="l">Lula ${f1(100-p)}%</b>.</li>
     <li><b>Chance of winning.</b> Final polls in Brazil have missed by up to 2 to 3 points (Oct 4 this year, the 2022 runoff). We treat 2 points as the typical miss in either direction. With Flávio ${f1(Math.abs(p-50))} points ${p>=50?"above":"below"} 50%, that gives him a <b>${Math.round(pf)}%</b> chance and Lula <b>${Math.round(100-pf)}%</b>.</li>
   </ol>`;
+}
+
+
+// ---------- states and governors ----------
+const GOV=[
+ ["São Paulo","Tarcísio de Freitas","Republicanos","f"],["Minas Gerais","Cleitinho Azevedo","Republicanos","f"],["Rio de Janeiro","Douglas Ruas","PL","f"],
+ ["Paraná","Sergio Moro","PL","f"],["Rio Grande do Sul","Luciano Zucco","PL","f"],["Santa Catarina","Jorginho Mello","PL","f"],["Goiás","Daniel Vilela","MDB","f"],
+ ["Pará","Dr. Daniel","Podemos","f"],["Mato Grosso","Otaviano Pivetta","Republicanos","f"],["Mato Grosso do Sul","Eduardo Riedel","PP","f"],["Rondônia","Marcos Rogério","PL","f"],["Roraima","Arthur Henrique","PL","f"],
+ ["Bahia","Jerônimo Rodrigues","PT","l"],["Ceará","Elmano de Freitas","PT","l"],["Piauí","Rafael Fonteles","PT","l"],["Paraíba","Lucas Ribeiro","PP","l"],["Sergipe","Fábio Mitidieri","PSD","l"],
+ ["Pernambuco","Raquel Lyra","PSD","n"],["Maranhão","Eduardo Braide","PSD","n"],["Alagoas","JHC","PSDB","n"],["Amapá","Dr. Furlan","PSD","n"]];
+const GOVR=[["Distrito Federal","Celina Leão (PP) vs Leandro Grass (PT)"],["Espírito Santo","Lorenzo Pazolini (Republicanos) vs Ricardo Ferraço (MDB)"],["Amazonas","Omar Aziz (PSD) vs Maria do Carmo (PL)"],["Rio Grande do Norte","Allyson (União) vs Cadu de Lula (PT)"],["Acre","Mailza Assis (PP) vs Alan Rick (Republicanos)"],["Tocantins","Professora Dorinha (União) vs Vicentinho Júnior (PSDB)"]];
+(function(){
+  const c=k=>GOV.filter(g=>g[3]===k).length;
+  document.getElementById("govstats").innerHTML=`
+    <div class="stat"><b class="num">${GOV.length}</b><span>governors already elected</span></div>
+    <div class="stat"><b class="num f">${c("f")}</b><span>of them back Flávio</span></div>
+    <div class="stat"><b class="num l">${c("l")}</b><span>back Lula</span></div>
+    <div class="stat"><b class="num">${c("n")}</b><span>neutral · ${GOVR.length} states still in a runoff</span></div>`;
+  const lab={f:'<span class="f">Flávio</span>',l:'<span class="l">Lula</span>',n:'<span class="dim">Neutral</span>'};
+  let h=`<thead><tr><th>State</th><th>Governor</th><th>Backs</th></tr></thead><tbody>`;
+  GOV.forEach(g=>{h+=`<tr><td>${g[0]}</td><td class="txt">${g[1]} <span class="dim">(${g[2]})</span></td><td class="txt">${lab[g[3]]}</td></tr>`});
+  h+=`<tr><td colspan="3" class="txt" style="font-weight:600;background:var(--band)">Governor runoff on Oct 25</td></tr>`;
+  GOVR.forEach(g=>{h+=`<tr><td>${g[0]}</td><td class="txt" colspan="2">${g[1]}</td></tr>`});
+  document.getElementById("t6").innerHTML=h+"</tbody>";
+})();
+
+// ---------- what Lula needs ----------
+function paths(){
+  const J=window.PJ; if(!J)return;
+  const raw=avg(RUN.map(r=>r[2]));
+  const F4=ACT.fv/1e6, L4=ACT.lv/1e6, E=OTH/1e6, dec=J.tF+J.tL;
+  const needX=0.5+(F4-L4)/(2*dec), nowX=J.tL/dec;
+  const gap=J.typ[0]-J.typ[1];
+  const sw=gap/2, swPct=sw/F4*100;
+  const fullMom=J.base+J.slope*J.days, needPace=(J.base-50)/Math.max(J.days,0.1);
+  const regs=REGION.rows.map(r=>{const ratio=(J.typ[0]+J.typ[1])/(F4+L4);return {n:r.n,V:(r.f4+r.l4)*ratio}});
+  const se=regs.find(r=>r.n==="Sudeste"), sePts=se?Math.abs(gap)/(2*se.V)*100:0;
+  const D=MED/100*REG/1e6;
+  const pill=(cls,txt)=>`<span class="grade ${cls}">${txt}</span>`;
+  const rows=[
+    ["The polls are wrong in Lula's favor",`On average they'd need to overrate Flávio by <b>${f1(raw-50)}</b> points as published, or <b>${f1(J.pAdj-50)}</b> after our adjustment.`,`On Oct 4 they did the opposite: on average they had Flávio ${f1(-AVGERR)} points too low.`, raw-50<1.5?pill("g-mid","Possible"):pill("g-bad","Unlikely")],
+    ["The eliminated candidates' voters break for Lula",`He'd need <b>${Math.round(needX*100)}%</b> of those who pick a side among the ${f1(E)}M who voted for others on Oct 4.`,`He's getting about <b>${Math.round(nowX*100)}%</b> (AtlasIntel).`, needX-nowX>0.12?pill("g-bad","Unlikely"):pill("g-mid","Possible")],
+    ["Flávio voters switch to Lula",`About <b>${f1(sw)}M</b> of them, ${f1(swPct)}% of everyone who voted Flávio on Oct 4. Each switch counts twice.`,`More than 80% of each side's voters say their choice is final. Online, people claiming to switch lean Lula about 2 to 1, but they're a few dozen accounts.`, swPct<2?pill("g-mid","Possible"):pill("g-bad","Hard")],
+    ["Flávio's voters stay home more than Lula's",`<b>${f1(gap)}M</b> more of Flávio's voters than Lula's would need to skip the runoff.`,`In a typical runoff only about ${f1(D)}M fewer people vote in total, so almost all of them would have to be Flávio voters.`, pill("g-bad","Very unlikely")],
+    ["This week's trend keeps going",`Polls would need to move toward Lula by <b>${f2(needPace)}</b> points a day until Sunday.`,`They've been moving ${f2(Math.abs(J.slope))} a day ${J.slope<0?"toward Lula":"toward Flávio"}. At full speed that ends at Flávio <b>${f1(fullMom)}%</b>.`, fullMom<50?pill("g-good","On track"):(fullMom<50.7?pill("g-mid","Close"):pill("g-bad","Not enough"))],
+    ["A big swing in the Southeast",`Lula would need to gain <b>${f1(sePts)}</b> points of the two-way share there alone.`,`Datafolha has the Southeast at Flávio ${REGION.rows.find(r=>r.n==="Sudeste").poll}%, about where it was on Oct 4.`, sePts<3?pill("g-mid","Possible"):pill("g-bad","Unlikely")]
+  ];
+  document.getElementById("pathstats").innerHTML=`
+    <div class="stat"><b class="num l">${Math.round(100-J.pf)}%</b><span>Lula's chance of winning in our projection</span></div>
+    <div class="stat"><b class="num">${f1(J.p-50)} pts</b><span>how far Flávio is above 50% in our projection</span></div>
+    <div class="stat"><b class="num">${f1(Math.abs(gap))}M</b><span>votes between them in the typical-turnout vote math</span></div>`;
+  let h=`<thead><tr><th>Path</th><th>What it would take</th><th class="hide-sm">Where it stands now</th><th>Verdict</th></tr></thead><tbody>`;
+  rows.forEach(r=>{h+=`<tr><td class="txt" style="font-weight:600">${r[0]}</td><td class="txt">${r[1]}</td><td class="txt hide-sm dim">${r[2]}</td><td class="txt">${r[3]}</td></tr>`});
+  document.getElementById("t7").innerHTML=h+"</tbody>";
+  const rest=fullMom-50;
+  document.getElementById("pathsum").innerHTML= rest>0
+    ? `<p><b>The most realistic path is a combination.</b> If this week's trend kept its full pace to Sunday, Flávio would still be ${f1(rest)} points above 50%. Lula would then also need the polls to be overrating Flávio by about ${f1(rest)} points, or a turnout edge of roughly ${f1(rest/100*(J.typ[0]+J.typ[1])*2)}M votes. Two things going his way at once is what a ${Math.round(100-J.pf)}% chance looks like.</p>`
+    : `<p><b>On current trends Lula is already on a winning path.</b> If this week's movement keeps its full pace to Sunday, he passes 50%.</p>`;
 }
 
 // ---------- poll trend chart ----------
@@ -848,7 +928,7 @@ cf.onclick=()=>{S.cand="f";setPressed(cf,cl);drawChart()};
 cl.onclick=()=>{S.cand="l";setPressed(cl,cf);drawChart()};
 
 abI.value=VM.ab;
-render();vm();pulse();gtrend();drawChart();pmChart();projection();
+render();vm();pulse();gtrend();drawChart();pmChart();projection();paths();
 let rz;window.addEventListener("resize",()=>{clearTimeout(rz);rz=setTimeout(()=>{gtrend();drawChart();pmChart()},150)});
 try{
   const ms=Date.UTC(2026,9,25,20,0)-Date.now(), d=Math.ceil(ms/864e5);
