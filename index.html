@@ -1,0 +1,860 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta property="og:title" content="Brazil Runoff Watch">
+<meta property="og:description" content="Lula vs Flávio: every runoff poll graded against Oct 4, our projection, vote math by region, and the debate reaction.">
+<title>Brazil Runoff Watch</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Condensed:wght@500;700&family=Source+Sans+3:wght@400;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+html,body{margin:0}
+[hidden]{display:none!important}
+img{max-width:100%}
+:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+
+/* Layout: one column. Real Oct 4 result -> polls -> vote math -> debate reaction -> pollster report cards -> trend -> method */
+:root{
+  --bg:#f5f6f4; --surface:#ffffff; --fg:#1b2229; --muted:#5c6670; --line:#d9ddd8;
+  --flavio:#1f5fbf; --flavio2:#8fb1e6; --lula:#c8332b; --lula2:#eba29c; --neutral:#b9c0c4; --undec:#d9b45a;
+  --accent:#0f7a5c; --band:#e8ece8; --tip:#1b2229; --tipfg:#f5f6f4; --warnbg:#fbf1d9; --warnfg:#6b4e0e;
+  --display:"IBM Plex Sans Condensed","Arial Narrow",system-ui,sans-serif;
+  --body:"Source Sans 3",system-ui,-apple-system,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#12171b; --surface:#1a2026; --fg:#e7ebe8; --muted:#97a1a8; --line:#2c353c;
+  --flavio:#6b9ef0; --flavio2:#34507c; --lula:#ef6d63; --lula2:#7a3632; --neutral:#4a535a; --undec:#9a7b2f;
+  --accent:#3fc29a; --band:#222a30; --tip:#e7ebe8; --tipfg:#12171b; --warnbg:#3a3017; --warnfg:#f0d48a; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#12171b; --surface:#1a2026; --fg:#e7ebe8; --muted:#97a1a8; --line:#2c353c;
+  --flavio:#6b9ef0; --flavio2:#34507c; --lula:#ef6d63; --lula2:#7a3632; --neutral:#4a535a; --undec:#9a7b2f;
+  --accent:#3fc29a; --band:#222a30; --tip:#e7ebe8; --tipfg:#12171b; --warnbg:#3a3017; --warnfg:#f0d48a; color-scheme:dark}
+body{background:var(--bg);color:var(--fg);font-family:var(--body);font-size:16px;line-height:1.5}
+.wrap{max-width:880px;margin:0 auto;padding-block:28px 48px;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));
+  display:grid;gap:40px}
+section{display:grid;gap:12px;min-width:0}
+h1,h2,h3{font-family:var(--display);text-wrap:balance;margin:0;line-height:1.15}
+h1{font-size:clamp(28px,6vw,40px);font-weight:700}
+h2{font-size:23px;font-weight:700}
+h3{font-size:17px;font-weight:700}
+p{margin:0;max-width:68ch}
+.eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.muted,.note{color:var(--muted)} .note{font-size:14px}
+.num{font-family:var(--mono);font-variant-numeric:tabular-nums}
+.f{color:var(--flavio)} .l{color:var(--lula)}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:18px;display:grid;gap:14px;min-width:0}
+[data-tip]{cursor:help;text-decoration:underline dotted;text-underline-offset:3px;text-decoration-color:var(--muted)}
+.key-term{background:var(--band);border-radius:8px;padding:10px 12px;font-size:15px;display:grid;gap:4px}
+.warn{background:var(--warnbg);color:var(--warnfg);border-radius:8px;padding:10px 12px;font-weight:600}
+nav.toc{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:14px}
+nav.toc a{color:var(--fg)}
+
+.result{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
+.cand{display:grid;gap:2px}
+.cand .pct{font-family:var(--display);font-size:34px;font-weight:700;line-height:1}
+.cand .votes{font-family:var(--mono);font-size:15px}
+
+.bars{display:grid;gap:18px}
+.row{display:grid;gap:6px}
+.row .lab{display:flex;justify-content:space-between;gap:4px 12px;flex-wrap:wrap;font-size:15px}
+.row .lab b{font-weight:600}
+.row .sub{font-size:13px;color:var(--muted)}
+.bar{position:relative;height:16px;border-radius:8px;overflow:hidden;display:flex;background:var(--band)}
+.bar i{display:block;height:100%;transition:width .35s ease}
+.bar .mid{position:absolute;left:50%;top:0;bottom:0;width:2px;background:var(--fg);opacity:.6}
+.row.key .bar{height:22px;border-radius:11px}
+@media (prefers-reduced-motion:reduce){.bar i{transition:none}}
+
+.controls{display:grid;gap:14px;border-top:1px solid var(--line);padding-top:16px}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:8px;overflow:hidden;flex-wrap:wrap}
+.seg button{font:inherit;font-size:14px;background:transparent;color:var(--fg);border:0;padding:8px 12px;cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--fg);color:var(--bg)}
+.seg button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.slider{display:grid;gap:6px}
+.slider label{font-size:15px}
+input[type=range]{width:100%;accent-color:var(--accent)}
+.ticks{display:flex;justify-content:space-between;gap:8px;font-family:var(--mono);font-size:11px;color:var(--muted)}
+.explain{font-size:15px;background:var(--band);border-radius:8px;padding:12px 14px;display:grid;gap:6px}
+.explain ol{margin:0;padding-left:20px;display:grid;gap:4px}
+
+.market{display:flex;gap:10px 16px;flex-wrap:wrap;align-items:baseline;border-top:1px solid var(--line);padding-top:14px}
+.market .big{font-family:var(--display);font-size:28px;font-weight:700}
+
+.tbl{overflow-x:auto;border:1px solid var(--line);border-radius:10px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;font-size:14px}
+th,td{padding:9px 12px;text-align:right;border-bottom:1px solid var(--line);white-space:nowrap}
+th:first-child,td:first-child{text-align:left}
+th{font-family:var(--body);font-size:12px;color:var(--muted);font-weight:600;vertical-align:bottom;line-height:1.3}
+th{white-space:normal;min-width:64px}
+td:first-child,td.txt{white-space:normal}
+td:first-child{min-width:110px}
+tr:last-child td{border-bottom:none}
+td{font-family:var(--mono);font-variant-numeric:tabular-nums}
+td:first-child{font-family:var(--body);font-weight:600}
+td.txt{font-family:var(--body)}
+tfoot td{font-weight:700;background:var(--band);border-top:2px solid var(--fg)}
+tfoot td *{font-weight:700}
+tfoot td:first-child{text-transform:uppercase;letter-spacing:.04em;font-size:12px}
+.grade{display:inline-block;font-family:var(--body);font-size:13px;padding:1px 9px;border-radius:999px;border:1px solid currentColor}
+.g-good{color:var(--accent)} .g-mid{color:var(--muted)} .g-bad{color:var(--lula)}
+.dim{color:var(--muted)}
+.legendrow{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:13px;color:var(--muted)}
+.sw{display:inline-block;width:11px;height:11px;border-radius:3px;vertical-align:-1px;margin-right:5px}
+
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px}
+.stat{border:1px solid var(--line);border-radius:10px;padding:12px 14px;display:grid;gap:2px;background:var(--surface)}
+.stat b{font-family:var(--display);font-size:28px;line-height:1.05}
+.stat span{font-size:14px;color:var(--muted)}
+.stack{display:flex;height:20px;border-radius:6px;overflow:hidden;background:var(--band)}
+.stack i{display:block;height:100%;font-style:normal;font-size:11px;font-family:var(--mono);color:#fff;text-align:center;line-height:20px;overflow:hidden;white-space:nowrap}
+.srow{display:grid;grid-template-columns:minmax(0,1fr);gap:4px}
+.srow .lab{display:flex;justify-content:space-between;gap:10px;font-size:14px}
+.srow .lab a{color:var(--fg)}
+.srow .lab span{color:var(--muted);font-family:var(--mono);font-size:12px;white-space:nowrap}
+.check{display:inline-flex;gap:8px;align-items:center;font-size:15px;cursor:pointer}
+.check input{width:18px;height:18px;accent-color:var(--accent)}
+.quotes{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px}
+.quotes h3{display:flex;align-items:center;gap:6px}
+.quotes ul{list-style:none;margin:0;padding:0;display:grid;gap:10px}
+.quotes li{border-left:3px solid var(--line);padding-left:10px;font-size:15px}
+.quotes li small{display:block;color:var(--muted);font-size:12px;margin-top:2px}
+.quotes .ql li{border-left-color:var(--lula)} .quotes .qf li{border-left-color:var(--flavio)}
+
+.chart{position:relative;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:12px;overflow-x:auto}
+.chart svg{display:block;width:100%;height:auto}
+.chart .hit{cursor:pointer}
+.legend{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:13px;color:var(--muted);padding:4px 4px 0}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.legend i{width:14px;height:3px;border-radius:2px;display:inline-block}
+
+#tip{position:fixed;z-index:20;pointer-events:none;background:var(--tip);color:var(--tipfg);font-size:13px;line-height:1.4;
+  padding:8px 10px;border-radius:8px;max-width:290px;box-shadow:0 4px 16px rgba(0,0,0,.18)}
+
+.method ul{margin:0;padding-left:20px;max-width:68ch}
+.method li{margin-bottom:6px}
+.src{font-size:13px;color:var(--muted)}
+.src a{color:var(--muted)}
+a:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.pair{white-space:nowrap}
+.proj{border:2px solid var(--fg)}
+.proj .big{font-family:var(--display);font-size:clamp(30px,8vw,42px);font-weight:700;line-height:1}
+.projtop{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}
+.projtop div{display:grid;gap:2px}
+details summary{cursor:pointer;font-weight:600;font-size:15px}
+details[open] summary{margin-bottom:8px}
+@media (max-width:600px){
+  .hide-sm{display:none}
+  th,td{padding:7px 5px;font-size:12px}
+  .card{padding:14px}
+  .seg button{padding:8px 10px;font-size:13px}
+  .stack i{font-size:10px}
+  td:first-child{min-width:78px}
+  th{min-width:0}
+  td{white-space:normal}
+  .tbl{border-radius:8px}
+  .d{display:block;font-size:11px}
+  .grade{font-size:12px;padding:1px 7px}
+}
+</style>
+</head>
+<body>
+
+
+<div class="wrap">
+  <header style="display:grid;gap:10px">
+    <div class="eyebrow">Lula vs Flávio Bolsonaro · runoff · updated <span id="updated">Tue Oct 20, 2026, 10:30 a.m. ET</span></div>
+    <h1>Brazil Runoff Watch</h1>
+    <p class="muted">Brazil picks its president on Sunday, Oct 25. This page collects every national runoff poll, checks how accurate each pollster was in the first round on Oct 4, works out the vote math from the real first-round count, and reads the online reaction to the Oct 18 debate. <span id="countdown"></span></p>
+    <div class="key-term">
+      <span><b>Valid votes:</b> votes for a candidate. Blank and null ballots don't count, the same way the electoral court decides the winner.</span>
+      <span><b>Share of the two:</b> a candidate's slice of the votes for Flávio and Lula only. Runoff polls only have those two names, so this is how we compare them with Oct 4.</span>
+      <span><b>Lead:</b> the leader's share minus the other's. Flávio 51% and Lula 49% is a lead of 2 points.</span>
+      <span class="note">Hover or tap any underlined number to see it in votes.</span>
+    </div>
+    <div class="card proj" id="projection">
+      <h2>Our projection</h2>
+      <div class="projtop">
+        <div><span class="eyebrow">Flávio</span><span class="big f num" id="pj-f"></span><span class="note" id="pj-fv"></span></div>
+        <div><span class="eyebrow">Lula</span><span class="big l num" id="pj-l"></span><span class="note" id="pj-lv"></span></div>
+        <div><span class="eyebrow">Chance of winning</span><span class="big num"><span class="f" id="pj-pf"></span> <span class="muted" style="font-size:.6em">/</span> <span class="l" id="pj-pl"></span></span><span class="note">Flávio / Lula</span></div>
+      </div>
+      <div class="bars" id="pj-bar"></div>
+      <p id="pj-line"></p>
+      <details><summary>How we got this</summary><div class="explain" id="pj-how"></div></details>
+    </div>
+    <nav class="toc" aria-label="Sections"><a href="#oct4">Oct 4 result</a><a href="#report">Pollster accuracy</a><a href="#polls">Runoff polls</a><a href="#trend">Poll trend and betting odds</a><a href="#votemath">Vote math and regions</a><a href="#debate">Debate reaction</a><a href="#method">Method</a></nav>
+  </header>
+
+  <section id="oct4">
+    <h2>The real result on Oct 4</h2>
+    <div class="card">
+      <div class="result">
+        <div class="cand"><span class="eyebrow">Flávio Bolsonaro (PL)</span><span class="pct f num">47.03%</span><span class="votes" id="fv"></span></div>
+        <div class="cand"><span class="eyebrow">Lula (PT)</span><span class="pct l num">45.16%</span><span class="votes" id="lv"></span></div>
+        <div class="cand"><span class="eyebrow">Flávio's lead</span><span class="pct num">1.87 pts</span><span class="votes" id="gapv"></span></div>
+      </div>
+      <p class="note" id="validnote"></p>
+    </div>
+  </section>
+
+  <section id="report">
+    <h2>Report card: how accurate each pollster was on Oct 4</h2>
+    <p class="note">Each pollster's last poll before the vote, compared with the real result. Too low on Flávio always means too high on Lula by the same amount.</p>
+    <div class="explain"><p><b>Why "share of the two"?</b> On Oct 4 there were 12 candidates. In the runoff there are only two. To compare the old polls with the runoff fairly, we look only at the votes for Flávio and Lula and ask how they split. In reality Flávio got 47.03% and Lula 45.16%. Of those 92.19 points, Flávio had <b class="f">51.0%</b> and Lula <b class="l">49.0%</b>. Datafolha said Flávio 42 and Lula 45, which is <b class="f">48.3%</b> vs <b class="l">51.7%</b> of the two, so it had Flávio 2.7 points too low and Lula 2.7 too high. That gap is what the adjustment uses.</p></div>
+    <div class="legendrow"><span>"Low" and "high" refer to Flávio.</span><span><span class="grade g-good">green</span> off by 1 point or less: accurate</span><span><span class="grade g-mid">gray</span> off by 1 to 2</span><span><span class="grade g-bad">red</span> off by more than 2</span></div>
+    <div class="tbl"><table id="t1"></table></div>
+  </section>
+
+  <section id="polls">
+    <h2>Who's ahead in the runoff polls</h2>
+    <p class="muted">None of these is a result. They are three ways of reading the same polls.</p>
+    <div class="card">
+      <div class="bars" id="bars"></div>
+      <p class="note">The thin line in the middle of each bar is 50%. If blue passes it, Flávio wins. Vote counts assume as many valid votes as on Oct 4.</p>
+
+      <div class="controls">
+        <h3>Adjust the middle bar</h3>
+        <p class="note">On Oct 4, almost every pollster had Flávio too low. These controls decide how much of that mistake you expect to happen again on Oct 25.</p>
+        <div style="display:grid;gap:6px">
+          <span style="font-size:15px">Which mistake to use</span>
+          <div class="seg" role="group" aria-label="Which mistake">
+            <button type="button" id="m-own" aria-pressed="true">Each pollster's own Oct 4 mistake</button>
+            <button type="button" id="m-avg" aria-pressed="false">The average mistake of all pollsters</button>
+          </div>
+        </div>
+        <div class="slider">
+          <label for="k">How much of it happens again: <b class="num" id="kval">50%</b></label>
+          <input type="range" id="k" min="0" max="100" step="10" value="50">
+          <div class="ticks"><span>0% · pollsters fixed it</span><span>50%</span><span>100% · exact same mistake</span></div>
+        </div>
+        <div class="explain" id="explain"></div>
+      </div>
+
+      <div class="market">
+        <span class="eyebrow">Betting market (Polymarket), chance of winning</span>
+        <span class="big f num">76.8%</span><span>Flávio</span>
+        <span class="big l num">23.5%</span><span>Lula</span>
+        <span class="note">Oct 19, 9:37 a.m.</span>
+      </div>
+    </div>
+
+    <h3 style="margin-top:8px">Every runoff poll, adjusted</h3>
+    <p class="note">The last three columns follow the controls above. The math for each row: the poll, moved by the amount in the "Moved" column. Flávio goes up by it and Lula down by the same amount. All numbers are valid votes: blank, null and undecided answers are left out, which is why each pair adds up to 100.</p>
+    <div class="tbl"><table id="t2"></table></div>
+  </section>
+
+  <section id="trend">
+    <h2>How the polls and the betting odds moved</h2>
+    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+      <span class="note">Show the share for</span>
+      <div class="seg" role="group" aria-label="Candidate">
+        <button type="button" id="c-f" aria-pressed="true">Flávio</button>
+        <button type="button" id="c-l" aria-pressed="false">Lula</button>
+      </div>
+    </div>
+    <div class="chart"><svg id="chart" viewBox="0 0 640 300" role="img" aria-label="Valid-vote share by pollster, Oct 8 to 19"></svg>
+      <div class="legend" id="legend"></div></div>
+    <p class="note">Hover or tap a point to see both candidates. Lula gained in four of these five series since the first week after Oct 4. PoderData moved back toward Flávio on Oct 19.</p>
+    <h3 style="margin-top:10px">Betting market over time (Polymarket)</h3>
+    <div class="chart"><svg id="pmchart" viewBox="0 0 640 280" role="img" aria-label="Polymarket chance of winning, Oct 1 to Oct 20"></svg>
+      <div class="legend"><span><i style="background:var(--flavio)"></i>Flávio</span><span><i style="background:var(--lula)"></i>Lula</span></div></div>
+    <p class="note">Chance of winning implied by bets, in US Eastern time. Flávio jumped from about 63% to 84% after he won the first round, then fell to about 77% on Oct 15 when Quaest and Datafolha showed the race narrowing. The Oct 18 debate barely moved it. Hover or tap the chart for exact values. Snapshots as reported by the Rio Times.</p>
+  </section>
+
+  <section id="votemath">
+    <h2>Vote math from the real Oct 4 count</h2>
+    <p class="muted">This part doesn't use runoff polls as its base. It starts from the real Oct 4 votes, adds where the eliminated candidates' voters say they're going, then applies how turnout has changed between rounds in past elections. It assumes each finalist keeps their own Oct 4 voters.</p>
+
+    <div class="card">
+      <h3>Step 1: the eliminated candidates' voters</h3>
+      <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+        <span class="note">Where their voters say they're going, according to</span>
+        <div class="seg" role="group" aria-label="Transfer source">
+          <button type="button" id="s-atlas" aria-pressed="true">AtlasIntel, Oct 13–18</button>
+          <button type="button" id="s-quaest" aria-pressed="false">Quaest, Oct 10–13</button>
+        </div>
+      </div>
+      <div class="tbl"><table id="t3"></table></div>
+      <p class="note">Endorsements don't carry voters with them. Cury endorsed Flávio, yet AtlasIntel finds more of his voters going to Lula. Endorsements: Caiado and Zema backed Flávio, Cury backed him with conditions, Renan Santos backed nobody.</p>
+      <div class="bars" id="step1"></div>
+    </div>
+
+    <div class="card">
+      <h3>Step 2: turnout</h3>
+      <p>On Oct 4, <b class="num">33.4 million</b> of 158.7 million registered voters stayed home (21.08%, the most since 1998). In five of the last six runoffs, even more people stayed home in the second round.</p>
+      <div class="tbl"><table id="t4"></table></div>
+      <p class="note">Why it usually rises: fewer races on the ballot. This year 20 of 27 states already chose their governor, so voters there have one less reason to go. 2022 was the exception, when both campaigns pushed turnout hard and some cities ran free buses.</p>
+
+      <h3>Four fixed scenarios, using past elections</h3>
+      <div class="bars" id="step2"></div>
+
+      <div class="controls">
+        <h3>Your own scenario</h3>
+        <div style="display:flex;gap:8px;flex-wrap:wrap" class="seg" role="group" aria-label="Turnout presets">
+          <button type="button" id="p-med" aria-pressed="true">Median of past runoffs</button>
+          <button type="button" id="p-same" aria-pressed="false">Same as Oct 4</button>
+          <button type="button" id="p-2022" aria-pressed="false">Like 2022</button>
+        </div>
+        <div class="slider">
+          <label for="ab">Share of registered voters who stay home on Oct 25: <b class="num" id="abval"></b></label>
+          <input type="range" id="ab" min="18" max="26" step="0.1" value="23.1">
+          <div class="ticks"><span>18% · big turnout</span><span>21.1% · same as Oct 4</span><span>26% · many stay home</span></div>
+        </div>
+        <div style="display:grid;gap:6px" id="splitbox">
+          <span style="font-size:15px">If fewer people vote, whose voters stay home?</span>
+          <div class="seg" role="group" aria-label="Who stays home">
+            <button type="button" id="d-even" aria-pressed="true">Both the same</button>
+            <button type="button" id="d-lula" aria-pressed="false">More of Lula's (60/40)</button>
+            <button type="button" id="d-fla" aria-pressed="false">More of Flávio's (60/40)</button>
+          </div>
+        </div>
+        <div class="bars" id="custom"></div>
+      </div>
+      <div class="explain" id="need"></div>
+    </div>
+    <div class="card">
+      <h3>Step 3: region by region</h3>
+      <p>National polls also report results by region. This takes Datafolha's regional numbers (Oct 13–15) and applies them to how many people really voted in each region on Oct 4, so a region counts as much as its real number of voters. It follows the adjustment slider in the runoff polls section, and the vote totals follow the typical-turnout case above.</p>
+      <div class="tbl"><table id="t5"></table></div>
+      <div class="bars" id="regbar"></div>
+      <div class="explain" id="regneed"></div>
+      <p class="note">How to read it: compare "Oct 4 share" with "Datafolha now". That shows who gained in each region since the first round. "Projected votes" go up for both candidates everywhere because they now include the 9.3 million votes from eliminated candidates and the change in turnout, so look at the shares, not the vote totals. Datafolha reports Norte and Centro-Oeste together, so both use the same number. National polls don't publish state results; state-level numbers would need separate state polls (São Paulo, Minas Gerais, Rio and Bahia hold about 45% of voters).</p>
+    </div>
+  </section>
+
+  <section id="debate">
+    <h2>Online reaction to the Oct 18 debate</h2>
+    <p class="muted">We read every top-level comment on 11 YouTube clips of the Band debate (Band, BandNews and CNN Brasil channels) and tagged each one by category: supports Flávio, supports Lula, says they switched, undecided, or neither.</p>
+    <p class="warn">Comment sections are self-selected partisans, not a vote estimate. Read this as "who won the conversation", not "who's winning the election".</p>
+    <label class="check"><input type="checkbox" id="hideflag" checked> Hide comments flagged as likely bots or spam</label>
+    <div class="stats" id="pstats"></div>
+
+    <div class="card">
+      <h3>What the comments say</h3>
+      <div class="legendrow" id="plegend"></div>
+      <div id="poverall"></div>
+      <h3 style="margin-top:6px">By clip</h3>
+      <p class="note">Each clip draws a different crowd. Full-debate uploads are mixed; the clip of Lula's post-debate comments drew mostly his critics.</p>
+      <div style="display:grid;gap:12px" id="pvideos"></div>
+      <h3 style="margin-top:6px">By day (Brasília time)</h3>
+      <div style="display:grid;gap:12px" id="pdays"></div>
+    </div>
+
+    <div class="card">
+      <h3>People who say they switched</h3>
+      <p class="note">Comments where the writer says <em>they</em> changed their vote, moved from undecided or blank to a candidate, or will no longer vote for someone they backed. These are claims; nobody can check them.</p>
+      <div class="tbl"><table id="pswitch"></table></div>
+      <p class="explain" id="pheavy"></p>
+      <div class="quotes">
+        <div class="qf"><h3><span class="sw" style="background:var(--flavio)"></span>Says they switched to Flávio</h3><ul id="qf"></ul></div>
+        <div class="ql"><h3><span class="sw" style="background:var(--lula)"></span>Says they switched to Lula</h3><ul id="ql"></ul></div>
+      </div>
+      <p class="note">Examples skip flagged comments, use one comment per account, and favor the most-liked. Quoted as written.</p>
+    </div>
+
+    <div class="card">
+      <h3>Likely bots and spam</h3>
+      <p class="note">A comment is flagged if any rule below matches. One comment can match several rules.</p>
+      <div class="tbl"><table id="pbots"></table></div>
+      <h3 style="margin-top:6px">Flagged comments lean more to Lula</h3>
+      <div style="display:grid;gap:12px" id="pmix"></div>
+      <p class="note">Repetitive or coordinated posting in these comment sections came mostly from the Lula side, which is why the switch counts above leave flagged comments out.</p>
+    </div>
+
+    <div class="card">
+      <h3>Google searches, last 7 days in Brazil</h3>
+      <div class="chart"><svg id="gtrend" viewBox="0 0 640 260" role="img" aria-label="Hourly Google search interest for Lula and Flávio Bolsonaro"></svg>
+        <div class="legend"><span><i style="background:var(--flavio)"></i>Flávio Bolsonaro</span><span><i style="background:var(--lula)"></i>Lula</span></div></div>
+      <p class="note">Hourly search interest, scaled so the highest hour is 100. Both peaked the night of the debate. "Lula" is one short common word (it also means squid), so its line sits higher than the full name "Flávio Bolsonaro" for that reason alone. Compare the shapes, not the heights.</p>
+    </div>
+  </section>
+
+  <section class="method" id="method">
+    <h2>How the numbers work</h2>
+    <ul>
+      <li><strong>Our projection:</strong> the average of three estimates (adjusted polls at 50%, the vote math with typical turnout, and the sum of regions), plus half of this week's poll trend carried forward to Sunday. Chance of winning assumes the final result can land about 2 points either side of the projection (one standard error), which is roughly how far final polls missed in recent Brazilian elections. It uses the default settings, so moving the sliders doesn't change it.</li>
+      <li><strong>Average of the polls:</strong> the latest runoff poll from each pollster, all counted equally, with nothing changed.</li>
+      <li><strong>Adjusted polls:</strong> for each pollster, we take how far off it was on Flávio's share of the two on Oct 4 and add back the percentage you pick. Lula gets whatever is left out of 100.</li>
+      <li><strong>Most accurate pollsters:</strong> those within 1 point of Flávio's real share of the two on Oct 4, with nothing changed.</li>
+      <li><strong>Turnout:</strong> the median change in abstention between rounds across the six runoffs from 2002 to 2022 (+2.0 points), applied to the 158.7 million registered voters. When more people vote than on Oct 4, the extra voters split the way people who skipped Oct 4 say they'll vote.</li>
+      <li><strong>Regions:</strong> Oct 4 votes for Flávio and Lula in each region, scaled to the typical-turnout total, times Datafolha's regional share of the two (adjusted by Datafolha's own Oct 4 mistake when the slider is above 0%).</li>
+      <li><strong>Betting odds:</strong> Polymarket snapshots reported by the Rio Times; the market's own history can differ slightly.</li>
+      <li><strong>Debate comments:</strong> 12,995 top-level comments on 11 clips, fetched Oct 20 at 03:55 UTC through YouTube's official API. Each comment was read and tagged by Claude. Bot flags: same text from 3+ accounts, a short slogan repeated by 5+ accounts, an account posting 5+ times, links or self-promotion, or coordination spotted while reading.</li>
+    </ul>
+    <p class="note">Limits: part of the Oct 4 polling miss came from Caiado and Renan Santos voters switching to Flávio at the last minute, which can't happen the same way in a two-person race. BTG/Nexus's last poll before Oct 4 was from Sep 28, so its error includes a real late swing. Ipespe has no Oct 4 poll here and gets the average mistake. The voter-transfer percentages also come from polls. New polls: Datafolha on Thursday Oct 22; Datafolha and Quaest final polls Saturday Oct 24.</p>
+    <p class="src">Sources: <a href="https://www.aljazeera.com/news/2026/10/16/latest-poll-shows-bolsonaro-maintaining-edge-over-lula-in-brazil-run-off">Al Jazeera (vote counts)</a> · <a href="https://www.poder360.com.br/poder-eleicoes-2026/abstencao-no-1o-turno-cresce-e-vai-a-2108-em-2026/">Poder360 (2026 abstention)</a> · <a href="https://mais.opovo.com.br/colunistas/editorial/2026/10/12/quem-pode-decidir-a-eleicao.html">O Povo (abstention history)</a> · <a href="https://agenciabrasil.ebc.com.br/politica/noticia/2018-10/taxa-de-abstencao-na-eleicao-presidencial-e-maior-desde-1998">Agência Brasil (2018)</a> · <a href="https://www.cut.org.br/noticias/total-de-abstencoes-caiu-de-20-95-para-20-59-entre-o-1-e-o-2-turno-da-eleicao-1f2f">CUT (2022)</a> · <a href="https://acritica.net/eleicoes-2026/caiado-zema-e-cury-apoiam-flavio-no-2o-turno-renan-santos-libera-eleitores/">A Crítica (endorsements)</a> · <a href="https://www.infomoney.com.br/politica/atlasintel-para-onde-foram-os-votos-de-caiado-renan-zema-e-cury-no-2o-turno/">InfoMoney (AtlasIntel transfers)</a> · <a href="https://www.infomoney.com.br/politica/quaest-transferencia-de-votos-lula-flavio/">InfoMoney (Quaest transfers)</a> · <a href="https://www.falanews.com.br/2026/10/pesquisas-eleitorais-2026-primeiro-turno-acertos-erros.html">Fala News (pollster ranking)</a> · <a href="https://www.gazetadopovo.com.br/eleicoes/2026/pesquisa-eleitoral-2026/um-de-seis-institutos-de-pesquisa-apontava-flavio-numericamente-a-frente-de-lula/">Gazeta do Povo</a> · <a href="https://www.poder360.com.br/poder-eleicoes-2026/saiba-como-estao-lula-e-flavio-a-6-dias-da-eleicao/">Poder360 (poll roundup)</a> · <a href="https://www.usnews.com/news/world/articles/2026-10-19/bolsonaros-lead-over-lula-narrows-ahead-of-brazil-runoff-polls-show">Reuters</a> · <a href="https://www.riotimesonline.com/brazil-runoff-prediction-markets-polymarket-kalshi-odds/">Rio Times (Polymarket history)</a> · <a href="https://www.congressoemfoco.com.br/noticia/122894/flavio-vence-em-quatro-regioes-lula-domina-nordeste">Congresso em Foco (Oct 4 by region)</a> · <a href="https://www.opovo.com.br/noticias/politica/eleicoes/2026/10/16/datafolha-lula-abre-32-pontos-no-nordeste-flavio-lidera-no-sul.html">O Povo (Datafolha by region)</a> · YouTube Data API · Google Trends</p>
+  </section>
+</div>
+<div id="tip" hidden></div>
+
+<script>
+const P={"cats":[{"key":"supports_lula","name":"Supports Lula"},{"key":"claims_switch_to_lula","name":"Claims switch to Lula"},{"key":"neither","name":"Neither / unclear"},{"key":"undecided","name":"Undecided / blank / null"},{"key":"claims_switch_to_flavio","name":"Claims switch to Flávio"},{"key":"supports_flavio","name":"Supports Flávio"}],"overall":{"all":{"n":12995,"counts":{"supports_lula":4618,"claims_switch_to_lula":109,"neither":3913,"undecided":119,"claims_switch_to_flavio":35,"supports_flavio":4201}},"clean":{"n":10874,"counts":{"supports_lula":3649,"claims_switch_to_lula":78,"neither":3485,"undecided":114,"claims_switch_to_flavio":34,"supports_flavio":3514}}},"by_video":{"all":[{"key":"Gqc1rQtzWUk","n":2000,"counts":{"supports_lula":734,"claims_switch_to_lula":48,"neither":660,"undecided":15,"claims_switch_to_flavio":6,"supports_flavio":537}},{"key":"Amwukq3hviM","n":684,"counts":{"supports_lula":258,"claims_switch_to_lula":5,"neither":177,"undecided":9,"claims_switch_to_flavio":1,"supports_flavio":234}},{"key":"IO6FXN09HIU","n":2000,"counts":{"supports_lula":833,"claims_switch_to_lula":15,"neither":619,"undecided":22,"claims_switch_to_flavio":7,"supports_flavio":504}},{"key":"5I_GPckal_4","n":2001,"counts":{"supports_lula":794,"claims_switch_to_lula":8,"neither":706,"undecided":23,"claims_switch_to_flavio":2,"supports_flavio":468}},{"key":"RugVB17uRVM","n":2000,"counts":{"supports_lula":835,"claims_switch_to_lula":19,"neither":558,"undecided":21,"claims_switch_to_flavio":4,"supports_flavio":563}},{"key":"wk6zHB67p-Y","n":2000,"counts":{"supports_lula":423,"claims_switch_to_lula":4,"neither":358,"undecided":3,"claims_switch_to_flavio":2,"supports_flavio":1210}},{"key":"X1fp4JzouvA","n":2000,"counts":{"supports_lula":669,"claims_switch_to_lula":8,"neither":763,"undecided":24,"claims_switch_to_flavio":3,"supports_flavio":533}},{"key":"I23Dgpy0L6o","n":130,"counts":{"supports_lula":34,"claims_switch_to_lula":2,"neither":26,"undecided":1,"claims_switch_to_flavio":5,"supports_flavio":62}},{"key":"YFWJeiZq_G0","n":57,"counts":{"supports_lula":8,"claims_switch_to_lula":0,"neither":20,"undecided":0,"claims_switch_to_flavio":2,"supports_flavio":27}},{"key":"4kx0wDe9NRw","n":95,"counts":{"supports_lula":23,"claims_switch_to_lula":0,"neither":13,"undecided":0,"claims_switch_to_flavio":3,"supports_flavio":56}},{"key":"HOL1Hk9UjYo","n":28,"counts":{"supports_lula":7,"claims_switch_to_lula":0,"neither":13,"undecided":1,"claims_switch_to_flavio":0,"supports_flavio":7}}],"clean":[{"key":"Gqc1rQtzWUk","n":1558,"counts":{"supports_lula":526,"claims_switch_to_lula":24,"neither":584,"undecided":15,"claims_switch_to_flavio":6,"supports_flavio":403}},{"key":"Amwukq3hviM","n":597,"counts":{"supports_lula":228,"claims_switch_to_lula":5,"neither":167,"undecided":9,"claims_switch_to_flavio":1,"supports_flavio":187}},{"key":"IO6FXN09HIU","n":1849,"counts":{"supports_lula":760,"claims_switch_to_lula":15,"neither":586,"undecided":22,"claims_switch_to_flavio":7,"supports_flavio":459}},{"key":"5I_GPckal_4","n":1651,"counts":{"supports_lula":623,"claims_switch_to_lula":8,"neither":612,"undecided":21,"claims_switch_to_flavio":2,"supports_flavio":385}},{"key":"RugVB17uRVM","n":1547,"counts":{"supports_lula":568,"claims_switch_to_lula":12,"neither":489,"undecided":19,"claims_switch_to_flavio":4,"supports_flavio":455}},{"key":"wk6zHB67p-Y","n":1796,"counts":{"supports_lula":365,"claims_switch_to_lula":4,"neither":304,"undecided":2,"claims_switch_to_flavio":1,"supports_flavio":1120}},{"key":"X1fp4JzouvA","n":1620,"counts":{"supports_lula":514,"claims_switch_to_lula":8,"neither":679,"undecided":24,"claims_switch_to_flavio":3,"supports_flavio":392}},{"key":"I23Dgpy0L6o","n":99,"counts":{"supports_lula":31,"claims_switch_to_lula":2,"neither":22,"undecided":1,"claims_switch_to_flavio":5,"supports_flavio":38}},{"key":"YFWJeiZq_G0","n":46,"counts":{"supports_lula":8,"claims_switch_to_lula":0,"neither":19,"undecided":0,"claims_switch_to_flavio":2,"supports_flavio":17}},{"key":"4kx0wDe9NRw","n":87,"counts":{"supports_lula":21,"claims_switch_to_lula":0,"neither":12,"undecided":0,"claims_switch_to_flavio":3,"supports_flavio":51}},{"key":"HOL1Hk9UjYo","n":24,"counts":{"supports_lula":5,"claims_switch_to_lula":0,"neither":11,"undecided":1,"claims_switch_to_flavio":0,"supports_flavio":7}}]},"by_day":{"all":[{"key":"2026-10-18","n":50,"counts":{"supports_lula":20,"claims_switch_to_lula":1,"neither":7,"undecided":2,"claims_switch_to_flavio":0,"supports_flavio":20}},{"key":"2026-10-19","n":12633,"counts":{"supports_lula":4475,"claims_switch_to_lula":107,"neither":3805,"undecided":114,"claims_switch_to_flavio":35,"supports_flavio":4097}},{"key":"2026-10-20","n":312,"counts":{"supports_lula":123,"claims_switch_to_lula":1,"neither":101,"undecided":3,"claims_switch_to_flavio":0,"supports_flavio":84}}],"clean":[{"key":"2026-10-18","n":43,"counts":{"supports_lula":20,"claims_switch_to_lula":1,"neither":7,"undecided":2,"claims_switch_to_flavio":0,"supports_flavio":13}},{"key":"2026-10-19","n":10589,"counts":{"supports_lula":3544,"claims_switch_to_lula":76,"neither":3400,"undecided":110,"claims_switch_to_flavio":34,"supports_flavio":3425}},{"key":"2026-10-20","n":242,"counts":{"supports_lula":85,"claims_switch_to_lula":1,"neither":78,"undecided":2,"claims_switch_to_flavio":0,"supports_flavio":76}}]},"videos":[{"id":"Gqc1rQtzWUk","title":"Flávio Bolsonaro x Lula: debate presidencial do 2º turno na Band - 18/10/2026","channel":"Band Jornalismo","views":32069925},{"id":"Amwukq3hviM","title":"ELEIÇÕES 2026 | DEBATE DA BAND 2º TURNO - 18/10/2026","channel":"Rádio BandNews FM","views":2791646},{"id":"IO6FXN09HIU","title":"Lula para Flávio sobre voto de presidiários: 'Até seu pai vota em mim'","channel":"Band Jornalismo","views":1460439},{"id":"5I_GPckal_4","title":"Confira a integra do 1° confronto direto entre Lula e Flávio Bolsonaro no Debate da Band","channel":"Rádio BandNews FM","views":1437091},{"id":"RugVB17uRVM","title":"FLÁVIO BOLSONARO X LULA: DEBATE PRESIDENCIAL DO 2º TURNO | ÍNTEGRA","channel":"Band Jornalismo","views":1430757},{"id":"wk6zHB67p-Y","title":"Lula avalia debate e volta a desafiar Flávio Bolsonaro #BandEleições","channel":"Band Jornalismo","views":1147942},{"id":"X1fp4JzouvA","title":"Confira a íntegra do debate da Band deste 2º turno","channel":"Rádio BandNews FM","views":902820},{"id":"I23Dgpy0L6o","title":"Flávio e Lula trocam ataques e citam Luchsinger, Vorcaro e SUS no 1º debate | CNN NOVO DIA","channel":"CNN Brasil","views":85391},{"id":"YFWJeiZq_G0","title":"Aliados de Flávio e Lula batem boca nos bastidores do debate da Band | CNN 360°","channel":"CNN Brasil","views":38469},{"id":"4kx0wDe9NRw","title":"Análise: Lula escorrega no início, mas devolve armadilhas e empareda Flávio | LIVE CNN","channel":"CNN Brasil","views":36530},{"id":"HOL1Hk9UjYo","title":"Análise: Debate prioriza eleitores convertidos e afasta indecisos | LIVE CNN","channel":"CNN Brasil","views":17804}],"switch":{"claims_switch_to_lula":{"all":109,"all_accounts":76,"clean":78,"clean_accounts":73,"quotes":[{"text":"O Flávio agiu como um moleque debochado, totalmente despreparado, perdeu um voto! FUGIU DE TODAS AS PERGUNTAS POR QUÊ? suspeito","likes":132,"day":"2026-10-19","video":"Gqc1rQtzWUk"},{"text":"Que horror esse debate! Flávio perdeu um voto","likes":122,"day":"2026-10-19","video":"Gqc1rQtzWUk"},{"text":"Votei no Flávio, mas voto nesse moleque mais não","likes":94,"day":"2026-10-19","video":"Gqc1rQtzWUk"},{"text":"Só acho que Flávio perdeu meu voto.","likes":30,"day":"2026-10-19","video":"RugVB17uRVM"},{"text":"Perdoe eu vou mudar meu voto...para o Lula...o Flávio não  está  respondendo nada.","likes":29,"day":"2026-10-19","video":"5I_GPckal_4"},{"text":"Viva Lula, ganhou meu voto","likes":28,"day":"2026-10-18","video":"Amwukq3hviM"},{"text":"Votei no Bolsonaro mas depois desse debate vou votar no lula esse Flávio não responde nada só acusa","likes":22,"day":"2026-10-19","video":"5I_GPckal_4"},{"text":"Flávio não respondeu nenhuma das perguntas.. aqui em casa perdeu 4 votos! 😢","likes":20,"day":"2026-10-19","video":"5I_GPckal_4"},{"text":"Flavio me convenceu a votar no Lula.","likes":9,"day":"2026-10-19","video":"Gqc1rQtzWUk"},{"text":"FLAVIO NÃO SABE RESPONDER UM SENHOR . UM CARA DESSE SER PRESIDENTE É SACANAGEM , NÃO FALOU UM PROJETO DE GOVERNO SÓ FALOU DO LULA … NÃO TEM MAIS MEU VOTO","likes":9,"day":"2026-10-19","video":"Gqc1rQtzWUk"}]},"claims_switch_to_flavio":{"all":35,"all_accounts":35,"clean":34,"clean_accounts":34,"quotes":[{"text":"Agora vou votar no Flavio 22","likes":60,"day":"2026-10-19","video":"I23Dgpy0L6o"},{"text":"Estava indeciso agora vou votar no Flávio.","likes":32,"day":"2026-10-19","video":"I23Dgpy0L6o"},{"text":"Fora lule,agora é Flávio.","likes":26,"day":"2026-10-19","video":"4kx0wDe9NRw"},{"text":"Até então eu ainda estava na dúvida mas agora não tenho mais vou votar no 22 Com certeza","likes":15,"day":"2026-10-19","video":"I23Dgpy0L6o"},{"text":"Eu estava pensando em não votar mas eu prefiro votar no Flávio Bolsonaro","likes":10,"day":"2026-10-19","video":"4kx0wDe9NRw"},{"text":"Depois desse debate eu vou de 22","likes":9,"day":"2026-10-19","video":"YFWJeiZq_G0"},{"text":"LIXO DE DEBATE. NÃO QUERIA VOTAR 22, MAS CONTINUAR NO 13 É PHODA!","likes":8,"day":"2026-10-19","video":"I23Dgpy0L6o"},{"text":"Estava indeciso mas vou de 22","likes":6,"day":"2026-10-19","video":"I23Dgpy0L6o"},{"text":"Eu votei no PT mas depois desse debate eu vou de 22!","likes":4,"day":"2026-10-19","video":"YFWJeiZq_G0"},{"text":"Lula perdeu meu voto, definitivamente.","likes":3,"day":"2026-10-19","video":"Gqc1rQtzWUk"}]}},"heavy":{"switch_comments":24,"total_comments":50,"minutes":46,"distinct_texts":20,"video":"Gqc1rQtzWUk"},"bots":{"flagged":2121,"total":12995,"rules":[{"rule":"same_text_many_accounts","desc":"Same text (20+ chars) from 3+ accounts","n":82},{"rule":"repeated_slogan","desc":"Short slogan repeated by 5+ accounts","n":640},{"rule":"repeat_poster","desc":"Account posted 5+ comments","n":1454},{"rule":"link_or_promo","desc":"Link or self-promotion","n":17},{"rule":"manual_spam","desc":"Spam/coordination spotted while reading","n":50}],"by_video":[{"key":"Gqc1rQtzWUk","n":2000,"flagged":442},{"key":"Amwukq3hviM","n":684,"flagged":87},{"key":"IO6FXN09HIU","n":2000,"flagged":151},{"key":"5I_GPckal_4","n":2001,"flagged":350},{"key":"RugVB17uRVM","n":2000,"flagged":453},{"key":"wk6zHB67p-Y","n":2000,"flagged":204},{"key":"X1fp4JzouvA","n":2000,"flagged":380},{"key":"I23Dgpy0L6o","n":130,"flagged":31},{"key":"YFWJeiZq_G0","n":57,"flagged":11},{"key":"4kx0wDe9NRw","n":95,"flagged":8},{"key":"HOL1Hk9UjYo","n":28,"flagged":4}],"repeated":[{"text":"22","accounts":89,"posts":98,"label":"supports_flavio"},{"text":"13","accounts":25,"posts":26,"label":"supports_lula"},{"text":"😂😂😂😂","accounts":13,"posts":13,"label":"neither"},{"text":"Ladrão","accounts":13,"posts":14,"label":"neither"},{"text":"😂","accounts":11,"posts":11,"label":"neither"},{"text":"Flávio 22","accounts":10,"posts":27,"label":"supports_flavio"},{"text":"Lula 13","accounts":9,"posts":10,"label":"supports_lula"},{"text":"😂😂😂","accounts":9,"posts":9,"label":"neither"},{"text":"2️⃣2️⃣🇧🇷","accounts":9,"posts":9,"label":"supports_flavio"},{"text":"Fora lula","accounts":8,"posts":8,"label":"supports_flavio"}],"heavy_accounts":188,"accounts":9613,"flagged_mix":{"n":2121,"counts":{"supports_lula":969,"claims_switch_to_lula":31,"neither":428,"undecided":5,"claims_switch_to_flavio":1,"supports_flavio":687}},"clean_mix":{"n":10874,"counts":{"supports_lula":3649,"claims_switch_to_lula":78,"neither":3485,"undecided":114,"claims_switch_to_flavio":34,"supports_flavio":3514}}},"trends":{"dates":["2026-10-13 04:00:00","2026-10-13 05:00:00","2026-10-13 06:00:00","2026-10-13 07:00:00","2026-10-13 08:00:00","2026-10-13 09:00:00","2026-10-13 10:00:00","2026-10-13 11:00:00","2026-10-13 12:00:00","2026-10-13 13:00:00","2026-10-13 14:00:00","2026-10-13 15:00:00","2026-10-13 16:00:00","2026-10-13 17:00:00","2026-10-13 18:00:00","2026-10-13 19:00:00","2026-10-13 20:00:00","2026-10-13 21:00:00","2026-10-13 22:00:00","2026-10-13 23:00:00","2026-10-14 00:00:00","2026-10-14 01:00:00","2026-10-14 02:00:00","2026-10-14 03:00:00","2026-10-14 04:00:00","2026-10-14 05:00:00","2026-10-14 06:00:00","2026-10-14 07:00:00","2026-10-14 08:00:00","2026-10-14 09:00:00","2026-10-14 10:00:00","2026-10-14 11:00:00","2026-10-14 12:00:00","2026-10-14 13:00:00","2026-10-14 14:00:00","2026-10-14 15:00:00","2026-10-14 16:00:00","2026-10-14 17:00:00","2026-10-14 18:00:00","2026-10-14 19:00:00","2026-10-14 20:00:00","2026-10-14 21:00:00","2026-10-14 22:00:00","2026-10-14 23:00:00","2026-10-15 00:00:00","2026-10-15 01:00:00","2026-10-15 02:00:00","2026-10-15 03:00:00","2026-10-15 04:00:00","2026-10-15 05:00:00","2026-10-15 06:00:00","2026-10-15 07:00:00","2026-10-15 08:00:00","2026-10-15 09:00:00","2026-10-15 10:00:00","2026-10-15 11:00:00","2026-10-15 12:00:00","2026-10-15 13:00:00","2026-10-15 14:00:00","2026-10-15 15:00:00","2026-10-15 16:00:00","2026-10-15 17:00:00","2026-10-15 18:00:00","2026-10-15 19:00:00","2026-10-15 20:00:00","2026-10-15 21:00:00","2026-10-15 22:00:00","2026-10-15 23:00:00","2026-10-16 00:00:00","2026-10-16 01:00:00","2026-10-16 02:00:00","2026-10-16 03:00:00","2026-10-16 04:00:00","2026-10-16 05:00:00","2026-10-16 06:00:00","2026-10-16 07:00:00","2026-10-16 08:00:00","2026-10-16 09:00:00","2026-10-16 10:00:00","2026-10-16 11:00:00","2026-10-16 12:00:00","2026-10-16 13:00:00","2026-10-16 14:00:00","2026-10-16 15:00:00","2026-10-16 16:00:00","2026-10-16 17:00:00","2026-10-16 18:00:00","2026-10-16 19:00:00","2026-10-16 20:00:00","2026-10-16 21:00:00","2026-10-16 22:00:00","2026-10-16 23:00:00","2026-10-17 00:00:00","2026-10-17 01:00:00","2026-10-17 02:00:00","2026-10-17 03:00:00","2026-10-17 04:00:00","2026-10-17 05:00:00","2026-10-17 06:00:00","2026-10-17 07:00:00","2026-10-17 08:00:00","2026-10-17 09:00:00","2026-10-17 10:00:00","2026-10-17 11:00:00","2026-10-17 12:00:00","2026-10-17 13:00:00","2026-10-17 14:00:00","2026-10-17 15:00:00","2026-10-17 16:00:00","2026-10-17 17:00:00","2026-10-17 18:00:00","2026-10-17 19:00:00","2026-10-17 20:00:00","2026-10-17 21:00:00","2026-10-17 22:00:00","2026-10-17 23:00:00","2026-10-18 00:00:00","2026-10-18 01:00:00","2026-10-18 02:00:00","2026-10-18 03:00:00","2026-10-18 04:00:00","2026-10-18 05:00:00","2026-10-18 06:00:00","2026-10-18 07:00:00","2026-10-18 08:00:00","2026-10-18 09:00:00","2026-10-18 10:00:00","2026-10-18 11:00:00","2026-10-18 12:00:00","2026-10-18 13:00:00","2026-10-18 14:00:00","2026-10-18 15:00:00","2026-10-18 16:00:00","2026-10-18 17:00:00","2026-10-18 18:00:00","2026-10-18 19:00:00","2026-10-18 20:00:00","2026-10-18 21:00:00","2026-10-18 22:00:00","2026-10-18 23:00:00","2026-10-19 00:00:00","2026-10-19 01:00:00","2026-10-19 02:00:00","2026-10-19 03:00:00","2026-10-19 04:00:00","2026-10-19 05:00:00","2026-10-19 06:00:00","2026-10-19 07:00:00","2026-10-19 08:00:00","2026-10-19 09:00:00","2026-10-19 10:00:00","2026-10-19 11:00:00","2026-10-19 12:00:00","2026-10-19 13:00:00","2026-10-19 14:00:00","2026-10-19 15:00:00","2026-10-19 16:00:00","2026-10-19 17:00:00","2026-10-19 18:00:00","2026-10-19 19:00:00","2026-10-19 20:00:00","2026-10-19 21:00:00","2026-10-19 22:00:00","2026-10-19 23:00:00","2026-10-20 00:00:00","2026-10-20 01:00:00","2026-10-20 02:00:00","2026-10-20 03:00:00","2026-10-20 04:00:00"],"series":{"Lula":[13,11,13,16,20,19,14,11,9,9,11,14,14,12,12,12,12,14,14,14,13,12,13,13,11,10,9,8,9,10,10,9,9,9,10,11,11,9,9,10,10,14,16,16,14,13,13,14,11,10,9,9,10,10,11,9,9,9,9,11,10,9,9,9,10,13,15,18,27,19,14,13,11,10,9,11,12,14,14,12,11,11,11,13,12,10,10,10,11,12,13,15,22,20,15,14,12,10,10,10,12,13,15,15,16,15,16,18,19,17,17,18,18,16,17,18,17,19,17,17,15,14,13,15,14,16,19,20,21,22,23,23,24,24,22,21,21,24,32,75,100,61,40,32,27,23,18,23,33,38,28,22,19,18,17,21,18,16,14,15,16,18,22,21,19,17,19,16,15],"Flávio Bolsonaro":[2,2,2,2,3,3,3,2,2,2,2,3,3,2,3,4,4,4,5,4,3,3,3,3,3,3,3,4,4,4,4,3,3,3,3,4,4,3,2,2,3,4,4,4,3,4,4,3,3,2,2,3,4,4,3,3,2,2,2,3,2,2,2,2,2,3,3,3,3,3,2,2,2,2,1,2,2,3,2,2,2,2,2,2,2,2,3,3,3,4,5,7,10,8,5,4,3,3,2,3,4,4,4,4,3,3,3,4,4,4,4,4,4,4,4,4,4,3,3,3,2,2,2,2,3,4,4,4,4,4,4,5,5,5,5,4,4,5,7,13,20,16,11,9,7,6,5,5,7,8,7,6,5,4,5,6,5,5,5,5,5,6,7,7,6,6,6,4,4]}},"meta":{"comments":12995,"accounts":9613,"videos":11,"unlabeled":0,"first_fetch":"2026-10-20 03:54","last_fetch":"2026-10-20 03:55","built":"2026-10-20 04:23 UTC"}};
+const ACT={f:47.03,l:45.16,fv:56104503,lv:53879538};
+const VALID=(ACT.fv+ACT.lv)/((ACT.f+ACT.l)/100);
+const REAL2=ACT.f/(ACT.f+ACT.l)*100;
+const REG=158745463;
+const FIRST=[
+ {p:"Gerp",d:"Oct 3",f:46,l:44},{p:"Veritá",d:"Final poll",f:47,l:45},
+ {p:"Futura",d:"Oct 3",f:44.8,l:42.6},{p:"Palver",d:"Oct 3",f:47,l:43},
+ {p:"Quaest",d:"Oct 3",f:45,l:46},{p:"AtlasIntel",d:"Oct 3",f:44.1,l:47},
+ {p:"PoderData",d:"Oct 3",f:43,l:45},{p:"Datafolha",d:"Oct 3",f:42,l:45},
+ {p:"CNT/MDA",d:"Oct 3",f:42.1,l:47.8},{p:"BTG/Nexus",d:"Sep 28",f:39,l:44},
+ {p:"Vox Brasil",d:"Oct 2",f:41.2,l:40.4,total:true},
+ {p:"Real Time Big Data",d:"Oct 1",f:41,l:46}
+];
+FIRST.forEach(r=>{ r.two=r.f/(r.f+r.l)*100; r.err=r.two-REAL2; });
+const ERR=Object.fromEntries(FIRST.map(r=>[r.p,r.err]));
+const AVGERR=FIRST.reduce((s,r)=>s+r.err,0)/FIRST.length;
+const RUN=[
+ ["AtlasIntel","Oct 19",51.1],["BTG/Nexus","Oct 19",50.3],["PoderData","Oct 19",52.0],
+ ["Futura","Oct 19",50.4],["Ipespe","Oct 19",51.2],["Vox Brasil","Oct 18",49.0],
+ ["Gerp","Oct 16",52.0],["CNT/MDA","Oct 16",50.5],["Datafolha","Oct 15",51.0],
+ ["Palver","Oct 15",50.5],["Quaest","Oct 14",51.1],
+ ["Real Time Big Data","Oct 20",52.0]
+];
+const HIST={
+ "AtlasIntel":[[9,52.8],[19,51.1]],"Datafolha":[[8,52.0],[15,51.0]],
+ "BTG/Nexus":[[13,52.0],[19,50.3]],"PoderData":[[8,53.0],[12,51.0],[15,50.0],[19,52.0]],
+ "Futura":[[13,51.8],[16,50.8],[19,50.4]]
+};
+const S={mode:"own",k:.5,cand:"f"};
+const f1=x=>x.toFixed(1), f2=x=>x.toFixed(2);
+const nf=n=>Math.round(n).toLocaleString("en-US");
+const mv=pct=>(pct/100*VALID/1e6).toFixed(1)+"M";
+const esc=s=>String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/"/g,"&quot;");
+const tipAttr=t=>` data-tip="${esc(t)}" tabindex="0"`;
+const leadTxt=m=>Math.abs(m)<0.05?"Tied":(m>0?"Flávio":"Lula")+" by "+f1(Math.abs(m));
+const leadCls=m=>m>=0?"f":"l";
+const errShort=e=>Math.abs(e)<0.05?"On target":e<0?`${f1(-e)} low<span class="hide-sm"> on Flávio</span>`:`${f1(e)} high<span class="hide-sm"> on Flávio</span>`;
+const pairF=(a,b,cls)=>`<span class="pair"><span class="f">${a}</span> · <span class="l">${b}</span></span>`;
+const errTxt=e=>Math.abs(e)<0.05?"On target":e<0?`Flávio ${f1(-e)} too low · Lula ${f1(-e)} too high`:`Flávio ${f1(e)} too high · Lula ${f1(e)} too low`;
+const shareErr=(said,real)=>{const d=said-real;return Math.abs(d)<0.05?"exact":f1(Math.abs(d))+(d<0?" too low":" too high")};
+const avg=a=>a.reduce((s,x)=>s+x,0)/a.length;
+const errFor=p=>S.mode==="avg"||ERR[p]===undefined?AVGERR:ERR[p];
+const added=p=>-S.k*errFor(p);
+const sgn=x=>(x>=0?"+":"−")+f1(Math.abs(x));
+const setPressed=(on,...offs)=>{on.setAttribute("aria-pressed","true");offs.forEach(b=>b.setAttribute("aria-pressed","false"))};
+
+function bar(label,sub,v,key){
+  const lead=2*v-100;
+  return `<div class="row${key?" key":""}">
+    <div class="lab"><b>${label}</b><span class="num"><span class="f"${tipAttr(`Flávio ${f2(v)}% ≈ ${mv(v)} votes`)}>Flávio ${f1(v)}%</span> · <span class="l"${tipAttr(`Lula ${f2(100-v)}% ≈ ${mv(100-v)} votes`)}>Lula ${f1(100-v)}%</span></span></div>
+    <div class="sub">${sub} · ${leadTxt(lead)} pts, about ${(Math.abs(lead)/100*VALID/1e6).toFixed(1)}M votes</div>
+    <div class="bar"><i style="width:${v}%;background:var(--flavio)"></i><i style="width:${100-v}%;background:var(--lula)"></i><span class="mid"></span></div></div>`;
+}
+function barVotes(label,sub,F,L,key){
+  const v=F/(F+L)*100;
+  return `<div class="row${key?" key":""}">
+    <div class="lab"><b>${label}</b><span class="num"><span class="f">Flávio ${f1(v)}% · ${f1(F)}M</span> · <span class="l">Lula ${f1(100-v)}% · ${f1(L)}M</span></span></div>
+    <div class="sub">${sub} · ${F>=L?"Flávio":"Lula"} ahead by ${f1(Math.abs(F-L))}M votes</div>
+    <div class="bar"><i style="width:${v}%;background:var(--flavio)"></i><i style="width:${100-v}%;background:var(--lula)"></i><span class="mid"></span></div></div>`;
+}
+
+document.getElementById("fv").textContent=nf(ACT.fv)+" votes";
+document.getElementById("lv").textContent=nf(ACT.lv)+" votes";
+document.getElementById("gapv").textContent=nf(ACT.fv-ACT.lv)+" votes";
+const OTH=(100-ACT.f-ACT.l)/100*VALID;
+document.getElementById("validnote").textContent=`Out of about ${(VALID/1e6).toFixed(1)} million valid votes. Another ${(OTH/1e6).toFixed(1)} million (${(100-ACT.f-ACT.l).toFixed(2)}%) went to candidates who are now out of the race; those voters are up for grabs on Oct 25. Counting only Flávio and Lula, Flávio got ${f1(REAL2)}% of the two.`;
+
+function render(){
+  const raw=avg(RUN.map(r=>r[2]));
+  const cor=avg(RUN.map(r=>r[2]+added(r[0])));
+  const goodP=FIRST.filter(r=>Math.abs(r.err)<=1).map(r=>r.p);
+  const goodRows=RUN.filter(r=>goodP.includes(r[0]));
+  const good=avg(goodRows.map(r=>r[2]));
+  const kp=Math.round(S.k*100);
+  document.getElementById("bars").innerHTML=
+    bar("What the polls say",`Average of the latest poll from ${RUN.length} pollsters, unchanged`,raw)+
+    bar("If the polls are off like on Oct 4",kp===0?"Set to 0%, so same as the plain average":`${kp}% of ${S.mode==="own"?"each pollster's own":"the average"} Oct 4 mistake added back`,cor,true)+
+    bar("What the most accurate pollsters say",`Only ${goodRows.map(r=>r[0]).join(", ")}, which were within 1 point on Oct 4`,good);
+  document.getElementById("kval").textContent=kp+"%";
+
+  const e=errFor("AtlasIntel"), a=added("AtlasIntel"), atl=FIRST.find(r=>r.p==="AtlasIntel");
+  document.getElementById("explain").innerHTML = kp===0
+    ? "<b>At 0%, nothing changes.</b> You're trusting the polls exactly as published."
+    : `<b>How it works, using AtlasIntel as the example</b>
+      <ol>
+        <li>On Oct 4, Flávio really got <b>${f1(REAL2)}%</b> of the votes for the two of them, and Lula <b>${f1(100-REAL2)}%</b>.</li>
+        <li>${S.mode==="own"?`AtlasIntel's last poll before Oct 4 had him at <b>${f1(atl.two)}%</b> of the two (and Lula at ${f1(100-atl.two)}%). So it had Flávio <b>${f1(Math.abs(e))} points too low</b> and Lula ${f1(Math.abs(e))} too high.`:`On average, the 11 pollsters had Flávio <b>${f1(Math.abs(e))} points too low</b> on Oct 4. That's the number used for every poll.`}</li>
+        <li>You expect <b>${kp}%</b> of that mistake to happen again. ${kp}% of ${f1(Math.abs(e))} is <b>${f1(a)}</b>.</li>
+        <li>AtlasIntel's runoff poll says Flávio 51.1%. Add ${f1(a)}: <b class="f">Flávio ${f1(51.1+a)}%</b>.</li>
+        <li>Lula moves by the same amount the other way: 48.9 − ${f1(a)} = <b class="l">Lula ${f1(48.9-a)}%</b>. Together they still add up to 100, because these are valid votes only.</li>
+      </ol>`;
+
+  let h=`<thead><tr><th>Pollster</th><th>Poll<br><span class="dim">Flávio · Lula</span></th><th class="hide-sm">Its Oct 4 mistake</th><th>Moved<br><span class="dim">${kp}% of mistake</span></th><th>Adjusted<br><span class="dim">Flávio · Lula</span></th></tr></thead><tbody>`;
+  RUN.forEach(([p,d,fl])=>{
+    const ad=added(p), c=fl+ad, e=errFor(p);
+    const math=`Flávio ${f1(fl)} ${ad>=0?"+":"−"} ${f1(Math.abs(ad))} = ${f1(c)}; Lula ${f1(100-fl)} ${ad>=0?"−":"+"} ${f1(Math.abs(ad))} = ${f1(100-c)} (≈ ${mv(c)} vs ${mv(100-c)} votes)`;
+    h+=`<tr><td>${p} <span class="dim d" style="font-weight:400">${d}</span></td>
+      <td${tipAttr(`≈ ${mv(fl)} vs ${mv(100-fl)} votes`)}>${pairF(f1(fl),f1(100-fl))}</td>
+      <td class="txt dim hide-sm">${errShort(e)}${ERR[p]===undefined&&S.mode==="own"?" (average)":""}</td>
+      <td>${sgn(ad)}</td>
+      <td${tipAttr(math)}>${pairF(f1(c),f1(100-c))}</td></tr>`;
+  });
+  h+=`</tbody><tfoot><tr><td>Average</td><td>${pairF(f1(raw),f1(100-raw))}</td><td class="hide-sm"></td><td>${sgn(cor-raw)}</td><td>${pairF(f1(cor),f1(100-cor))}</td></tr></tfoot>`;
+  document.getElementById("t2").innerHTML=h;
+  regionModel();
+}
+
+(function(){
+  const g=e=>`<span class="grade ${Math.abs(e)<=1?"g-good":Math.abs(e)<=2?"g-mid":"g-bad"}">${errShort(e)}</span>`;
+  let h=`<thead><tr><th>Pollster</th><th class="hide-sm">Said<br><span class="dim">Flávio · Lula</span></th><th class="hide-sm">Each vs real<br><span class="dim">real 47.0 · 45.2</span></th><th>Share of the two<br><span class="dim">real 51.0 · 49.0</span></th><th>How far off</th></tr></thead><tbody>`;
+  [...FIRST].sort((a,b)=>Math.abs(a.err)-Math.abs(b.err)).forEach(r=>{
+    const lo=(d)=>Math.abs(d)<0.05?"exact":f1(Math.abs(d))+(d<0?" low":" high");
+    h+=`<tr><td>${r.p} <span class="dim d" style="font-weight:400">${r.d}${r.total?", all votes":""}</span></td>
+      <td${tipAttr(r.total?"Share of all votes, including blank and null, so not comparable to the result":`≈ ${mv(r.f)} vs ${mv(r.l)} votes (real ${mv(ACT.f)} vs ${mv(ACT.l)})`)} class="hide-sm">${pairF(f1(r.f),f1(r.l))}</td>
+      <td class="hide-sm">${r.total?'<span class="dim">not comparable</span>':pairF(lo(r.f-ACT.f),lo(r.l-ACT.l))}</td>
+      <td${tipAttr(`Flávio ${f1(r.f)} ÷ (${f1(r.f)} + ${f1(r.l)}) = ${f1(r.two)}%; Lula ${f1(100-r.two)}%`)}>${pairF(f1(r.two),f1(100-r.two))}</td>
+      <td>${g(r.err)}</td></tr>`;
+  });
+  h+=`</tbody><tfoot><tr><td>Average</td><td class="hide-sm"></td><td class="hide-sm"></td><td>${pairF(f1(avg(FIRST.map(r=>r.two))),f1(100-avg(FIRST.map(r=>r.two))))}</td><td class="txt">${errShort(AVGERR)}</td></tr></tfoot>`;
+  document.getElementById("t1").innerHTML=h;
+})();
+
+// ---------- vote math ----------
+const VM={src:"atlas",ab:null,split:.5};
+const VM_=VALID/1e6;
+const ELIM=[
+ {n:"Augusto Cury",v:3.40,e:"Flávio, with conditions (Oct 8)",atlas:[42.4,52.1],quaest:[30,34]},
+ {n:"Ronaldo Caiado",v:VM_*.0218,e:"Flávio (Oct 6)",atlas:[69.8,24.5],quaest:[42,23]},
+ {n:"Renan Santos",v:VM_*.0224,e:"Nobody; freed his voters",atlas:[33.5,31.9],quaest:[40,14]}
+];
+ELIM.push({n:"Zema and the rest",v:OTH/1e6-ELIM.reduce((s,e)=>s+e.v,0),e:"Zema: Flávio (Oct 5)",atlas:[61.3,30.7],quaest:[38,33]});
+const ABST={atlas:[40.2,55.7],quaest:[38,43]};
+const HISTT=[[2002,17.74,20.47],[2006,16.75,18.99],[2010,18.12,21.26],[2014,19.39,21.10],[2018,20.33,21.30],[2022,20.95,20.59]];
+const chg=HISTT.map(r=>r[2]-r[1]).sort((a,b)=>a-b);
+const MED=(chg[2]+chg[3])/2, AB1=21.08, ABMED=AB1+MED, AB22=AB1+(HISTT[5][2]-HISTT[5][1]);
+VM.ab=ABMED;
+const m1=x=>x.toFixed(2)+"M";
+
+(function(){
+  let h=`<thead><tr><th>Election</th><th>Stayed home,<br>1st round</th><th>Stayed home,<br>runoff</th><th>Change</th><th class="hide-sm">Same change in 2026</th></tr></thead><tbody>`;
+  HISTT.forEach(([y,a,b])=>{const d=b-a;h+=`<tr><td>${y}</td><td>${a.toFixed(2)}%</td><td>${b.toFixed(2)}%</td><td>${d>0?"+":"−"}${Math.abs(d).toFixed(2)} pts</td><td class="txt hide-sm">${f1(Math.abs(d)/100*REG/1e6)}M ${d>0?"fewer":"more"} voters</td></tr>`});
+  h+=`</tbody><tfoot><tr><td>Median</td><td></td><td></td><td>+${MED.toFixed(2)} pts</td><td class="txt hide-sm">${f1(MED/100*REG/1e6)}M fewer voters</td></tr>
+      <tr><td>2026</td><td>21.08%</td><td class="dim">≈ ${ABMED.toFixed(1)}% if median</td><td></td><td class="hide-sm"></td></tr></tfoot>`;
+  document.getElementById("t4").innerHTML=h;
+})();
+
+function turnout(F0,L0,ab,split){
+  const d=(ab-AB1)/100*REG/1e6; // + = fewer voters
+  if(d>=0){const T=F0+L0; const lf=split===.5?F0/T:(1-split), ll=split===.5?L0/T:split; return [F0-d*lf, L0-d*ll, d];}
+  const [af,al]=ABST[VM.src]; const up=-d; return [F0+up*af/100, L0+up*al/100, d];
+}
+let BASE=[0,0];
+function vm(){
+  let tF=0,tL=0;
+  let h=`<thead><tr><th>Candidate out</th><th class="hide-sm">Oct 4 votes</th><th class="hide-sm">Endorsed in runoff</th><th>Voters going to<br><span class="dim">Flávio · Lula</span></th><th class="hide-sm">Neither</th><th>Votes gained<br><span class="dim">Flávio · Lula</span></th></tr></thead><tbody>`;
+  ELIM.forEach(e=>{
+    const [pf,pl]=e[VM.src], gf=e.v*pf/100, gl=e.v*pl/100; tF+=gf; tL+=gl;
+    h+=`<tr><td>${e.n}</td><td class="hide-sm">${m1(e.v)}</td><td class="txt hide-sm">${e.e}</td><td>${pairF(f1(pf)+"%",f1(pl)+"%")}</td><td class="dim hide-sm">${f1(100-pf-pl)}%</td><td>${pairF("+"+m1(gf),"+"+m1(gl))}</td></tr>`;
+  });
+  h+=`</tbody><tfoot><tr><td>Total</td><td class="hide-sm">${m1(ELIM.reduce((s,e)=>s+e.v,0))}</td><td class="hide-sm"></td><td></td><td class="hide-sm"></td><td>${pairF("+"+m1(tF),"+"+m1(tL))}</td></tr></tfoot>`;
+  document.getElementById("t3").innerHTML=h;
+  const F0=ACT.fv/1e6+tF, L0=ACT.lv/1e6+tL; BASE=[F0,L0];
+  document.getElementById("step1").innerHTML=barVotes("After step 1",`Oct 4 votes + Flávio +${f1(tF)}M, Lula +${f1(tL)}M from eliminated candidates`,F0,L0);
+  const D=MED/100*REG/1e6;
+  const sA=turnout(F0,L0,ABMED,.5); TYP=[sA[0],sA[1]];
+  const sB=turnout(F0,L0,ABMED,.6), sF=turnout(F0,L0,ABMED,.4), sC=turnout(F0,L0,AB22,.5);
+  const [af,al]=ABST[VM.src];
+  document.getElementById("step2").innerHTML=
+    barVotes("Typical runoff, both sides stay home equally",`Median year: ${f1(D)}M fewer voters, taken from each side in proportion`,sA[0],sA[1],true)+
+    barVotes("Typical runoff, more of Lula's voters stay home",`${f1(D)}M fewer voters, 60% of them Lula's. Poorer voters abstain most, and they lean Lula`,sB[0],sB[1])+
+    barVotes("Typical runoff, more of Flávio's voters stay home",`${f1(D)}M fewer voters, 60% of them Flávio's`,sF[0],sF[1])+
+    barVotes("Turnout rises like 2022",`${f1(-sC[2])}M more voters, split the way Oct 4 no-shows say they'll vote (${f1(al)}% Lula, ${f1(af)}% Flávio)`,sC[0],sC[1]);
+  const gap=sA[0]-sA[1], per=(al-af)/100;
+  document.getElementById("need").innerHTML=`<b>What Lula would need</b> to close the ${f1(gap)}M-vote gap in the typical case. Any one of:
+    <ol><li>about <b>${f1(gap/2)}M</b> Flávio voters switching to him. Each switch counts twice: one vote less for Flávio, one more for Lula;</li>
+    <li><b>${f1(gap)}M</b> more of Flávio's voters than his own staying home;</li>
+    <li>about <b>${f1(gap/per)}M</b> extra people who skipped Oct 4 turning out, because they lean his way by only ${f1(al-af)} points. No past runoff came close to that.</li></ol>`;
+  custom();
+  regionModel();
+}
+function custom(){
+  const [F0,L0]=BASE, r=turnout(F0,L0,VM.ab,VM.split), d=r[2];
+  const ch=VM.ab-AB1;
+  document.getElementById("abval").textContent=`${VM.ab.toFixed(1)}% (${ch>=0?"+":"−"}${Math.abs(ch).toFixed(1)} pts vs Oct 4)`;
+  document.getElementById("splitbox").style.opacity=d>0?1:.45;
+  const who=VM.split===.5?"taken from each side in proportion":VM.split===.6?"60% of them Lula's":"60% of them Flávio's";
+  const [af,al]=ABST[VM.src];
+  const sub=Math.abs(d)<0.01?"Same turnout as Oct 4":d>0?`${f1(d)}M fewer voters, ${who}`:`${f1(-d)}M more voters, split like Oct 4 no-shows say they'll vote (${f1(al)}% Lula, ${f1(af)}% Flávio)`;
+  document.getElementById("custom").innerHTML=barVotes("Your scenario",sub,r[0],r[1],true);
+}
+const sa=document.getElementById("s-atlas"),sq=document.getElementById("s-quaest");
+sa.onclick=()=>{VM.src="atlas";setPressed(sa,sq);vm()};
+sq.onclick=()=>{VM.src="quaest";setPressed(sq,sa);vm()};
+const abI=document.getElementById("ab"), pm=document.getElementById("p-med"), ps=document.getElementById("p-same"), p22=document.getElementById("p-2022");
+const setAb=(v,btn)=>{VM.ab=btn?v:Math.round(v*10)/10;abI.value=VM.ab;btn?setPressed(btn,...[pm,ps,p22].filter(b=>b!==btn)):[pm,ps,p22].forEach(b=>b.setAttribute("aria-pressed","false"));custom()};
+pm.onclick=()=>setAb(ABMED,pm); ps.onclick=()=>setAb(AB1,ps); p22.onclick=()=>setAb(AB22,p22);
+abI.addEventListener("input",e=>setAb(+e.target.value,null));
+const de=document.getElementById("d-even"),dl=document.getElementById("d-lula"),dfl=document.getElementById("d-fla");
+de.onclick=()=>{VM.split=.5;setPressed(de,dl,dfl);custom()};
+dl.onclick=()=>{VM.split=.6;setPressed(dl,de,dfl);custom()};
+dfl.onclick=()=>{VM.split=.4;setPressed(dfl,de,dl);custom()};
+
+// ---------- debate reaction ----------
+const CATS=[
+ ["supports_flavio","Supports Flávio","var(--flavio)"],
+ ["claims_switch_to_flavio","Says they switched to Flávio","var(--flavio2)"],
+ ["undecided","Undecided / blank / null","var(--undec)"],
+ ["neither","Neither / unclear","var(--neutral)"],
+ ["claims_switch_to_lula","Says they switched to Lula","var(--lula2)"],
+ ["supports_lula","Supports Lula","var(--lula)"]
+];
+const VID=Object.fromEntries(P.videos.map(v=>[v.id,v]));
+const pct=(a,n)=>n?a/n*100:0;
+function stack(c,n){
+  return `<div class="stack">${CATS.map(([k,name,col])=>{const p=pct(c[k],n);return p>0?`<i style="width:${p}%;background:${col}" data-tip="${esc(name)}: ${p.toFixed(1)}% (${nf(c[k])} comments)">${p>=7?Math.round(p)+"%":""}</i>`:""}).join("")}</div>`;
+}
+function srow(label,c,n,extra){
+  return `<div class="srow"><div class="lab"><span style="color:var(--fg);font-family:var(--body);font-size:14px;white-space:normal">${label}</span><span>${nf(n)} comments${extra||""}</span></div>${stack(c,n)}</div>`;
+}
+document.getElementById("plegend").innerHTML=CATS.map(([k,n,c])=>`<span><span class="sw" style="background:${c}"></span>${n}</span>`).join("");
+function pulse(){
+  const clean=document.getElementById("hideflag").checked, key=clean?"clean":"all";
+  const o=P.overall[key], c=o.counts, n=o.n;
+  const lf=c.supports_flavio+c.claims_switch_to_flavio, ll=c.supports_lula+c.claims_switch_to_lula;
+  document.getElementById("pstats").innerHTML=`
+    <div class="stat"><b class="num">${nf(n)}</b><span>comments shown, from ${nf(P.meta.accounts)} accounts in total</span></div>
+    <div class="stat"><b class="num f">${f1(pct(lf,n))}%</b><span>lean Flávio</span></div>
+    <div class="stat"><b class="num l">${f1(pct(ll,n))}%</b><span>lean Lula</span></div>
+    <div class="stat"><b class="num">${f1(pct(P.bots.flagged,P.bots.total))}%</b><span>flagged as likely bots or spam (${nf(P.bots.flagged)})</span></div>`;
+  document.getElementById("poverall").innerHTML=srow("All 11 clips",c,n);
+  document.getElementById("pvideos").innerHTML=P.by_video[key].map(r=>{const v=VID[r.key]||{};return srow(`<a href="https://www.youtube.com/watch?v=${r.key}" target="_blank" rel="noopener"><b>${esc(v.channel||"")}</b> · ${esc(v.title||r.key)}</a>`,r.counts,r.n,v.views?` · ${(v.views/1e6).toFixed(1)}M views`:"")}).join("");
+  const dl={"2026-10-18":"Sun, Oct 18 (debate night)","2026-10-19":"Mon, Oct 19","2026-10-20":"Tue, Oct 20 (until 1 a.m.)"};
+  document.getElementById("pdays").innerHTML=P.by_day[key].map(r=>srow(dl[r.key]||r.key,r.counts,r.n)).join("");
+}
+document.getElementById("hideflag").addEventListener("change",pulse);
+(function(){
+  const sF=P.switch.claims_switch_to_flavio, sL=P.switch.claims_switch_to_lula;
+  document.getElementById("pswitch").innerHTML=`<thead><tr><th>Says they switched to</th><th class="hide-sm">All comments</th><th class="hide-sm">Different accounts</th><th class="hide-sm">Comments, flagged removed</th><th>Accounts, flagged removed</th></tr></thead><tbody>
+   <tr><td class="f">Flávio</td><td class="hide-sm">${sF.all}</td><td class="hide-sm">${sF.all_accounts}</td><td class="hide-sm">${sF.clean}</td><td><b class="f">${sF.clean_accounts}</b></td></tr>
+   <tr><td class="l">Lula</td><td class="hide-sm">${sL.all}</td><td class="hide-sm">${sL.all_accounts}</td><td class="hide-sm">${sL.clean}</td><td><b class="l">${sL.clean_accounts}</b></td></tr></tbody>`;
+  const h=P.heavy;
+  document.getElementById("pheavy").innerHTML=`<span><b>Why the right-hand column is the one to trust:</b> one account posted ${h.total_comments} comments in ${h.minutes} minutes on a single clip, ${h.switch_comments} of them saying "I'm switching to Lula" in ${h.distinct_texts} different wordings. Counting accounts, with flagged ones removed, ${sL.clean_accounts} say they switched to Lula and ${sF.clean_accounts} to Flávio, out of ${nf(P.meta.accounts)} commenters (about ${f1((sL.clean_accounts+sF.clean_accounts)/P.meta.accounts*100)}%).</span>`;
+  const q=arr=>arr.map(x=>{const v=VID[x.video]||{};return `<li>“${esc(x.text)}”<small>${x.likes} likes · ${esc(v.channel||"")} · ${x.day}</small></li>`}).join("");
+  document.getElementById("qf").innerHTML=q(sF.quotes);
+  document.getElementById("ql").innerHTML=q(sL.quotes);
+  const B=P.bots;
+  document.getElementById("pbots").innerHTML=`<thead><tr><th>Rule</th><th>Comments matched</th></tr></thead><tbody>${B.rules.map(r=>`<tr><td class="txt" style="font-weight:400">${esc(r.desc)}</td><td>${nf(r.n)}</td></tr>`).join("")}</tbody><tfoot><tr><td>Flagged in total</td><td>${nf(B.flagged)} of ${nf(B.total)} (${f1(pct(B.flagged,B.total))}%)</td></tr><tr><td class="txt">Accounts with 5+ comments</td><td>${nf(B.heavy_accounts)} of ${nf(B.accounts)}</td></tr></tfoot>`;
+  document.getElementById("pmix").innerHTML=srow("Flagged comments",B.flagged_mix.counts,B.flagged_mix.n)+srow("Not flagged",B.clean_mix.counts,B.clean_mix.n);
+})();
+const cw=(svg,min)=>Math.max(min||320,Math.min(900,(svg.parentElement.clientWidth||640)-24));
+function gtrend(){
+  const svg=document.getElementById("gtrend"),W=cw(svg),H=260,L=36,R=14,T=14,B=30;
+  svg.innerHTML="";svg.setAttribute("viewBox",`0 0 ${W} ${H}`);
+  const t=P.trends, n=t.dates.length, sl=t.series["Lula"], sf=t.series["Flávio Bolsonaro"];
+  const x=i=>L+i/(n-1)*(W-L-R), y=v=>T+(100-v)/100*(H-T-B);
+  const NS="http://www.w3.org/2000/svg";
+  const el=(nm,a)=>{const e=document.createElementNS(NS,nm);for(const k in a)e.setAttribute(k,a[k]);svg.appendChild(e);return e};
+  [0,25,50,75,100].forEach(v=>{el("line",{x1:L,x2:W-R,y1:y(v),y2:y(v),stroke:"var(--line)","stroke-dasharray":"2 4"});const tx=el("text",{x:L-6,y:y(v)+4,"text-anchor":"end","font-size":10,fill:"var(--muted)","font-family":"IBM Plex Mono,monospace"});tx.textContent=v});
+  const step=W<480?2:1; let dd=0;
+  t.dates.forEach((d,i)=>{if(d.endsWith("12:00:00")&&(dd++%step===0)){const tx=el("text",{x:x(i),y:H-10,"text-anchor":"middle","font-size":10,fill:"var(--muted)","font-family":"IBM Plex Mono,monospace"});const dt=new Date(d.replace(" ","T")+"Z");tx.textContent="Oct "+dt.getUTCDate()}});
+  const path=s=>s.map((v,i)=>(i?"L":"M")+x(i).toFixed(1)+","+y(v).toFixed(1)).join("");
+  el("path",{d:path(sl),fill:"none",stroke:"var(--lula)","stroke-width":1.8});
+  el("path",{d:path(sf),fill:"none",stroke:"var(--flavio)","stroke-width":1.8});
+  const cur=el("line",{x1:0,x2:0,y1:T,y2:H-B,stroke:"var(--muted)","stroke-width":1,opacity:0});
+  const hit=el("rect",{x:L,y:T,width:W-L-R,height:H-T-B,fill:"transparent",class:"hit"});
+  const move=ev=>{
+    const r=svg.getBoundingClientRect(), sx=(ev.clientX-r.left)/r.width*W;
+    const i=Math.max(0,Math.min(n-1,Math.round((sx-L)/(W-L-R)*(n-1))));
+    cur.setAttribute("x1",x(i));cur.setAttribute("x2",x(i));cur.setAttribute("opacity",.7);
+    tip.innerHTML=`<b>${t.dates[i].slice(5,16)} UTC</b><br>Flávio Bolsonaro: ${sf[i]}<br>Lula: ${sl[i]}`;tip.hidden=false;
+    let left=ev.clientX+12;if(left+tip.offsetWidth>innerWidth-8)left=ev.clientX-tip.offsetWidth-12;
+    tip.style.left=left+"px";tip.style.top=(ev.clientY+14)+"px";
+  };
+  hit.addEventListener("pointermove",move);hit.addEventListener("pointerdown",move);
+  hit.addEventListener("pointerleave",()=>{tip.hidden=true;cur.setAttribute("opacity",0)});
+}
+
+
+// ---------- regions ----------
+const REGION={src:"Datafolha, Oct 13–15",pollster:"Datafolha",rows:[
+ {n:"Sudeste",f4:24.90,l4:19.24,poll:56},
+ {n:"Nordeste",f4:10.40,l4:21.49,poll:34},
+ {n:"Sul",f4:10.52,l4:5.48,poll:62},
+ {n:"Norte",f4:5.01,l4:4.55,poll:58,note:"N + CO combined"},
+ {n:"Centro-Oeste",f4:5.13,l4:2.96,poll:58,note:"N + CO combined"}]};
+let TYP=null;
+function regionModel(){
+  if(!TYP)return;
+  const e=S.mode==="avg"?AVGERR:(ERR[REGION.pollster]??AVGERR), ad=-S.k*e;
+  const F4=ACT.fv/1e6, L4=ACT.lv/1e6, ratio=(TYP[0]+TYP[1])/(F4+L4);
+  const regF=REGION.rows.reduce((s,r)=>s+r.f4,0), regL=REGION.rows.reduce((s,r)=>s+r.l4,0);
+  const abF=F4-regF, abL=L4-regL;
+  let TF=0,TL=0;
+  let h=`<thead><tr><th>Region</th><th class="hide-sm">Oct 4 votes<br><span class="dim">Flávio · Lula</span></th><th>Oct 4 share<br><span class="dim">Flávio · Lula</span></th><th>Datafolha now<br><span class="dim">Flávio · Lula</span></th><th class="hide-sm">Adjusted<br><span class="dim">Flávio · Lula</span></th><th class="hide-sm">Projected votes<br><span class="dim">Flávio · Lula</span></th><th class="hide-sm">Leader</th></tr></thead><tbody>`;
+  const rows=REGION.rows.map(r=>{
+    const V=(r.f4+r.l4)*ratio, s4=r.f4/(r.f4+r.l4)*100, sa=Math.min(100,Math.max(0,r.poll+ad));
+    const pf=V*sa/100, pl=V-pf; TF+=pf; TL+=pl;
+    return {r,V,s4,sa,pf,pl};
+  });
+  rows.forEach(({r,s4,sa,pf,pl})=>{
+    h+=`<tr><td>${r.n}${r.note?` <span class="dim" style="font-weight:400">· ${r.note}</span>`:""}</td>
+      <td class="hide-sm">${pairF(f1(r.f4)+"M",f1(r.l4)+"M")}</td>
+      <td>${pairF(f1(s4),f1(100-s4))}</td>
+      <td>${pairF(f1(r.poll),f1(100-r.poll))}</td>
+      <td class="hide-sm">${pairF(f1(sa),f1(100-sa))}</td>
+      <td class="hide-sm">${pairF(f1(pf)+"M",f1(pl)+"M")}</td>
+      <td class="txt hide-sm ${pf>=pl?"f":"l"}">${pf>=pl?"Flávio":"Lula"} +${f1(Math.abs(pf-pl))}M</td></tr>`;
+  });
+  const aF=abF*ratio, aL=abL*ratio; TF+=aF; TL+=aL;
+  h+=`<tr><td class="txt" style="font-weight:400">Voters abroad and rounding <span class="dim">· kept at Oct 4 split</span></td><td class="hide-sm">${pairF(f1(abF)+"M",f1(abL)+"M")}</td><td></td><td></td><td class="hide-sm"></td><td class="hide-sm">${pairF(f1(aF)+"M",f1(aL)+"M")}</td><td class="hide-sm"></td></tr>`;
+  h+=`</tbody><tfoot><tr><td>Brazil</td><td class="hide-sm">${pairF(f1(F4)+"M",f1(L4)+"M")}</td><td>${pairF(f1(REAL2),f1(100-REAL2))}</td><td></td><td class="hide-sm"></td><td class="hide-sm">${pairF(f1(TF)+"M",f1(TL)+"M")}</td><td class="txt hide-sm ${TF>=TL?"f":"l"}">${TF>=TL?"Flávio":"Lula"} +${f1(Math.abs(TF-TL))}M</td></tr></tfoot>`;
+  document.getElementById("t5").innerHTML=h;
+  const kp=Math.round(S.k*100);
+  document.getElementById("regbar").innerHTML=barVotes("Sum of the regions",kp?`Datafolha's regional numbers, ${kp}% of its Oct 4 mistake added back`:"Datafolha's regional numbers as published",TF,TL,true);
+  const gap=TF-TL;
+  const need=rows.map(({r,V})=>`${r.n}: <b>${f1(Math.abs(gap)/(2*V)*100)}</b> pts`).join(" · ");
+  document.getElementById("regneed").innerHTML= gap>0
+    ? `<span><b>To flip the result from one region alone</b>, Lula would need to gain this many points of the two-candidate share there: ${need}. The Southeast is the cheapest place to do it because it has the most voters.</span>`
+    : `<span><b>Lula leads in this setting.</b> To flip it back from one region alone, Flávio would need: ${need}.</span>`;
+}
+
+// ---------- betting odds ----------
+const PM=[["2026-10-01 12:00",62.3,36.5],["2026-10-02 12:00",55.6,42.5],["2026-10-04 08:00",63,36.5],["2026-10-05 14:05",82.5,17.5],["2026-10-05 17:05",83.2,16.5],["2026-10-06 14:00",84.3,15.5],["2026-10-08 04:06",84.0,15.5],["2026-10-09 04:05",86.2,13.5],["2026-10-10 04:00",88,12],["2026-10-12 04:12",86.5,12.5],["2026-10-13 16:05",86,14],["2026-10-14 04:05",86.3,13.5],["2026-10-14 10:05",85.9,14.5],["2026-10-14 16:00",85.0,14.5],["2026-10-15 04:05",82.8,16.5],["2026-10-15 10:05",79.5,20.5],["2026-10-15 16:07",78.6,21.5],["2026-10-16 02:54",79.2,20.5],["2026-10-16 05:00",77.8,22.5],["2026-10-16 08:00",78.0,22.5],["2026-10-16 11:00",76.2,23.5],["2026-10-16 14:00",76.4,22.5],["2026-10-16 17:00",76.3,23.5],["2026-10-17 02:00",77.1,23.5],["2026-10-17 08:00",76.8,23.5],["2026-10-18 03:00",81,19.5],["2026-10-18 18:00",79.1,20.5],["2026-10-19 02:00",78.6,21.5],["2026-10-19 06:00",77.2,22.5],["2026-10-19 12:00",75.8,23.5],["2026-10-19 18:00",76.8,23.5],["2026-10-20 02:00",77.0,22.5],["2026-10-20 08:40",76.6,22.5]];
+const PMEV=[["2026-10-04 17:00","First round"],["2026-10-15 06:00","Polls narrow"],["2026-10-18 21:00","Band debate"]];
+function pmChart(){
+  const svg=document.getElementById("pmchart"),W=cw(svg),H=280,L=40,R=14,T=24,B=30;
+  svg.innerHTML="";svg.setAttribute("viewBox",`0 0 ${W} ${H}`);
+  const hrs=s=>{const [d,tm]=s.split(" ");const [Y,M,D]=d.split("-").map(Number);const [h,mi]=tm.split(":").map(Number);return (Date.UTC(Y,M-1,D,h,mi)-Date.UTC(2026,9,1))/36e5};
+  const last=Math.max(hrs(PM[PM.length-1][0])+12, 20*24);
+  const x=h=>L+h/last*(W-L-R), y=v=>T+(100-v)/100*(H-T-B);
+  const NS="http://www.w3.org/2000/svg";
+  const el=(n,a)=>{const e=document.createElementNS(NS,n);for(const k in a)e.setAttribute(k,a[k]);svg.appendChild(e);return e};
+  [0,25,50,75,100].forEach(v=>{el("line",{x1:L,x2:W-R,y1:y(v),y2:y(v),stroke:"var(--line)","stroke-width":v===50?1.6:1,"stroke-dasharray":v===50?"":"2 4"});const tx=el("text",{x:L-6,y:y(v)+4,"text-anchor":"end","font-size":10,fill:"var(--muted)","font-family":"IBM Plex Mono,monospace"});tx.textContent=v+"%"});
+  for(let d=1;d<=Math.floor(last/24);d+=(W<480?5:3)){const tx=el("text",{x:x((d-1)*24),y:H-10,"text-anchor":"middle","font-size":10,fill:"var(--muted)","font-family":"IBM Plex Mono,monospace"});tx.textContent="Oct "+d}
+  PMEV.forEach(([t,lab],i)=>{const xx=x(hrs(t));el("line",{x1:xx,x2:xx,y1:T,y2:H-B,stroke:"var(--muted)","stroke-dasharray":"3 3",opacity:.7});const tx=el("text",{x:xx+4,y:H-B-6-(i%2)*14,"text-anchor":"start","font-size":10,fill:"var(--muted)"});tx.textContent=lab});
+  const pts=PM.map(p=>[hrs(p[0]),p[1],p[2],p[0]]);
+  const path=i=>pts.map((p,j)=>(j?"L":"M")+x(p[0]).toFixed(1)+","+y(p[i]).toFixed(1)).join("");
+  el("path",{d:path(1),fill:"none",stroke:"var(--flavio)","stroke-width":2});
+  el("path",{d:path(2),fill:"none",stroke:"var(--lula)","stroke-width":2});
+  const lp=pts[pts.length-1];
+  el("circle",{cx:x(lp[0]),cy:y(lp[1]),r:4,fill:"var(--flavio)"});el("circle",{cx:x(lp[0]),cy:y(lp[2]),r:4,fill:"var(--lula)"});
+  const cur=el("line",{x1:0,x2:0,y1:T,y2:H-B,stroke:"var(--fg)","stroke-width":1,opacity:0});
+  const hit=el("rect",{x:L,y:T,width:W-L-R,height:H-T-B,fill:"transparent",class:"hit"});
+  const move=ev=>{
+    const r=svg.getBoundingClientRect(), sx=(ev.clientX-r.left)/r.width*W, hh=(sx-L)/(W-L-R)*last;
+    let bi=0;pts.forEach((p,i)=>{if(Math.abs(p[0]-hh)<Math.abs(pts[bi][0]-hh))bi=i});
+    const p=pts[bi];cur.setAttribute("x1",x(p[0]));cur.setAttribute("x2",x(p[0]));cur.setAttribute("opacity",.5);
+    tip.innerHTML=`<b>${p[3].slice(5)} ET</b><br>Flávio ${f1(p[1])}%<br>Lula ${f1(p[2])}%`;tip.hidden=false;
+    let left=ev.clientX+12;if(left+tip.offsetWidth>innerWidth-8)left=ev.clientX-tip.offsetWidth-12;
+    tip.style.left=left+"px";tip.style.top=(ev.clientY+14)+"px";
+  };
+  hit.addEventListener("pointermove",move);hit.addEventListener("pointerdown",move);
+  hit.addEventListener("pointerleave",()=>{tip.hidden=true;cur.setAttribute("opacity",0)});
+}
+
+
+// ---------- projection (fixed defaults; does not follow the sliders) ----------
+const ncdf=z=>{const t=1/(1+0.3275911*Math.abs(z)/Math.SQRT2);const y=1-(((((1.061405429*t-1.453152027)*t)+1.421413741)*t-0.284496736)*t+0.254829592)*t*Math.exp(-z*z/2);return z>=0?(1+y)/2:(1-y)/2};
+function projection(){
+  const sd=2.0;
+  const pAdj=avg(RUN.map(r=>r[2]-0.5*(ERR[r[0]]??AVGERR)));
+  let tF=0,tL=0; ELIM.forEach(e=>{tF+=e.v*e.atlas[0]/100;tL+=e.v*e.atlas[1]/100});
+  const F0=ACT.fv/1e6+tF, L0=ACT.lv/1e6+tL, typ=turnout(F0,L0,ABMED,.5), pVM=typ[0]/(typ[0]+typ[1])*100;
+  const ratio=(typ[0]+typ[1])/(ACT.fv/1e6+ACT.lv/1e6), adR=-0.5*(ERR[REGION.pollster]??AVGERR);
+  let RF=0,RL=0; REGION.rows.forEach(r=>{const V=(r.f4+r.l4)*ratio, s=r.poll+adR; RF+=V*s/100; RL+=V*(100-s)/100});
+  const regF=REGION.rows.reduce((s,r)=>s+r.f4,0), regL=REGION.rows.reduce((s,r)=>s+r.l4,0);
+  RF+=(ACT.fv/1e6-regF)*ratio; RL+=(ACT.lv/1e6-regL)*ratio; const pReg=RF/(RF+RL)*100;
+  const base=(pAdj+pVM+pReg)/3;
+  const slopes=Object.values(HIST).filter(s=>s.length>1).map(s=>(s[s.length-1][1]-s[0][1])/(s[s.length-1][0]-s[0][0]));
+  const slope=slopes.length?avg(slopes):0;
+  const mon=d=>{const m=String(d).match(/(\d+)/);return m?+m[1]:20};
+  const meanDay=avg(RUN.map(r=>mon(r[1]))), days=Math.max(0,25-meanDay);
+  const mom=0.5*slope*days;
+  const p=base+mom, pf=ncdf((p-50)/sd)*100, lo=p-1.28*sd, hi=p+1.28*sd;
+  const tot=typ[0]+typ[1];
+  document.getElementById("pj-f").textContent=f1(p)+"%";
+  document.getElementById("pj-l").textContent=f1(100-p)+"%";
+  document.getElementById("pj-fv").textContent=`≈ ${f1(tot*p/100)}M votes`;
+  document.getElementById("pj-lv").textContent=`≈ ${f1(tot*(100-p)/100)}M votes`;
+  document.getElementById("pj-pf").textContent=Math.round(pf)+"%";
+  document.getElementById("pj-pl").textContent=Math.round(100-pf)+"%";
+  document.getElementById("pj-bar").innerHTML=`<div class="row key"><div class="bar"><i style="width:${p}%;background:var(--flavio)"></i><i style="width:${100-p}%;background:var(--lula)"></i><span class="mid"></span></div><div class="sub">Likely range for Flávio (8 times in 10): ${f1(lo)}% to ${f1(hi)}%. The thin line is 50%.</div></div>`;
+  const ahead=RUN.filter(r=>r[2]>50).length, lulaAhead=RUN.filter(r=>r[2]<50).length;
+  const leader=p>=50?"Flávio":"Lula";
+  document.getElementById("pj-line").innerHTML=`${leader} is the favorite, but this is close enough that an upset is a real possibility. Flávio leads in ${ahead} of ${RUN.length} runoff polls${lulaAhead?`, Lula in ${lulaAhead}`:""}. Lula has gained in most polls this week and seems to have won the Oct 18 debate online. Polymarket gives Flávio ${document.querySelector(".market .big.f").textContent}.`;
+  document.getElementById("pj-how").innerHTML=`<ol>
+    <li><b>Three estimates of Flávio's share</b>, each built differently: the runoff polls adjusted for half of each pollster's Oct 4 mistake (<b>${f1(pAdj)}%</b>), the vote math from the real Oct 4 count with typical runoff turnout (<b>${f1(pVM)}%</b>), and the sum of the regions (<b>${f1(pReg)}%</b>). Their average: <b>${f1(base)}%</b>.</li>
+    <li><b>Momentum.</b> Across the pollsters with several runoff polls, Flávio's share has moved ${f2(Math.abs(slope))} points a day ${slope<0?"toward Lula":"toward Flávio"}. Their latest polls are about ${f1(days)} days before the vote. Trends usually slow down, so we carry half of that pace forward: <b>${mom>=0?"+":"−"}${f1(Math.abs(mom))}</b>.</li>
+    <li><b>The debate.</b> Online comments favored Lula, but the polls taken after the debate already include whatever effect it had, and commenters aren't a sample of voters. So it adds nothing on top: <b>0</b>.</li>
+    <li><b>Projection:</b> ${f1(base)} ${mom>=0?"+":"−"} ${f1(Math.abs(mom))} = <b class="f">Flávio ${f1(p)}%</b>, <b class="l">Lula ${f1(100-p)}%</b>.</li>
+    <li><b>Chance of winning.</b> Final polls in Brazil have missed by up to 2 to 3 points (Oct 4 this year, the 2022 runoff). We treat 2 points as the typical miss in either direction. With Flávio ${f1(Math.abs(p-50))} points ${p>=50?"above":"below"} 50%, that gives him a <b>${Math.round(pf)}%</b> chance and Lula <b>${Math.round(100-pf)}%</b>.</li>
+  </ol>`;
+}
+
+// ---------- poll trend chart ----------
+const COLS=["var(--flavio)","var(--accent)","var(--lula)","var(--fg)","var(--muted)"];
+function drawChart(){
+  const svg=document.getElementById("chart"),W=cw(svg),H=300,L=40,R=58,T=16,B=34;
+  svg.innerHTML="";svg.setAttribute("viewBox",`0 0 ${W} ${H}`);
+  const lo=S.cand==="f"?49:46, hi=S.cand==="f"?54:51;
+  const maxD=Math.max(20,...Object.values(HIST).flat().map(p=>p[0]));
+  const x=d=>L+(d-8)/(maxD-8)*(W-L-R), y=v=>T+(hi-v)/(hi-lo)*(H-T-B);
+  const NS="http://www.w3.org/2000/svg";
+  const el=(n,a)=>{const e=document.createElementNS(NS,n);for(const k in a)e.setAttribute(k,a[k]);svg.appendChild(e);return e};
+  for(let v=lo;v<=hi;v++){
+    el("line",{x1:L,x2:W-R,y1:y(v),y2:y(v),stroke:"var(--line)","stroke-width":v===50?1.8:1,"stroke-dasharray":v===50?"":"2 4"});
+    const t=el("text",{x:L-8,y:y(v)+4,"text-anchor":"end","font-size":11,fill:"var(--muted)","font-family":"IBM Plex Mono,monospace"});t.textContent=v+"%";
+  }
+  (W<480?[8,12,16,20]:[8,10,12,14,16,18,20]).forEach(d=>{const t=el("text",{x:x(d),y:H-10,"text-anchor":"middle","font-size":11,fill:"var(--muted)","font-family":"IBM Plex Mono,monospace"});t.textContent="Oct "+d});
+  const t50=el("text",{x:W-R+6,y:y(50)+4,"font-size":11,fill:"var(--muted)"});t50.textContent="tie";
+  const leg=document.getElementById("legend");leg.innerHTML="";
+  Object.entries(HIST).forEach(([n,pts],i)=>{
+    const c=COLS[i], val=v=>S.cand==="f"?v:100-v;
+    el("polyline",{points:pts.map(p=>x(p[0])+","+y(val(p[1]))).join(" "),fill:"none",stroke:c,"stroke-width":2.2,"stroke-linejoin":"round"});
+    pts.forEach((p,j)=>{
+      el("circle",{cx:x(p[0]),cy:y(val(p[1])),r:j===pts.length-1?4.5:3.2,fill:c});
+      el("circle",{cx:x(p[0]),cy:y(val(p[1])),r:12,fill:"transparent",class:"hit",tabindex:0,
+        "data-tip":`<b>${n}</b> · Oct ${p[0]}<br>Flávio ${f1(p[1])}% (≈ ${mv(p[1])})<br>Lula ${f1(100-p[1])}% (≈ ${mv(100-p[1])})<br>${leadTxt(2*p[1]-100)} pts`,"data-html":"1"});
+    });
+    leg.insertAdjacentHTML("beforeend",`<span><i style="background:${c}"></i>${n}</span>`);
+  });
+}
+
+// ---------- tooltip ----------
+const tip=document.getElementById("tip");
+function showTip(t,ev){
+  const s=t.getAttribute("data-tip");if(!s)return;
+  if(t.getAttribute("data-html"))tip.innerHTML=s;else tip.textContent=s;
+  tip.hidden=false;
+  const r=t.getBoundingClientRect();
+  let left=(ev&&ev.clientX)?ev.clientX+12:r.left+r.width/2;
+  let top=(ev&&ev.clientY)?ev.clientY+14:r.bottom+8;
+  const tw=tip.offsetWidth, th=tip.offsetHeight;
+  if(left+tw>window.innerWidth-8)left=window.innerWidth-tw-8;
+  if(top+th>window.innerHeight-8)top=((ev&&ev.clientY)?ev.clientY:r.top)-th-10;
+  tip.style.left=Math.max(8,left)+"px";tip.style.top=Math.max(8,top)+"px";
+}
+const hide=()=>{tip.hidden=true};
+document.addEventListener("pointerover",e=>{const t=e.target.closest("[data-tip]");if(t)showTip(t,e)});
+document.addEventListener("pointermove",e=>{const t=e.target.closest("[data-tip]");if(t)showTip(t,e)});
+document.addEventListener("pointerout",e=>{if(e.target.closest("[data-tip]"))hide()});
+document.addEventListener("pointerdown",e=>{const t=e.target.closest("[data-tip]");if(t)showTip(t,e);else if(!e.target.closest("#gtrend,#pmchart"))hide()});
+document.addEventListener("focusin",e=>{const t=e.target.closest("[data-tip]");if(t)showTip(t)});
+document.addEventListener("focusout",hide);
+window.addEventListener("scroll",hide,{passive:true});
+
+const mo=document.getElementById("m-own"),ma=document.getElementById("m-avg");
+mo.onclick=()=>{S.mode="own";setPressed(mo,ma);render()};
+ma.onclick=()=>{S.mode="avg";setPressed(ma,mo);render()};
+document.getElementById("k").addEventListener("input",e=>{S.k=e.target.value/100;render()});
+const cf=document.getElementById("c-f"),cl=document.getElementById("c-l");
+cf.onclick=()=>{S.cand="f";setPressed(cf,cl);drawChart()};
+cl.onclick=()=>{S.cand="l";setPressed(cl,cf);drawChart()};
+
+abI.value=VM.ab;
+render();vm();pulse();gtrend();drawChart();pmChart();projection();
+let rz;window.addEventListener("resize",()=>{clearTimeout(rz);rz=setTimeout(()=>{gtrend();drawChart();pmChart()},150)});
+try{
+  const ms=Date.UTC(2026,9,25,20,0)-Date.now(), d=Math.ceil(ms/864e5);
+  document.getElementById("countdown").textContent=ms>0?`${d} day${d===1?"":"s"} to go.`:"Voting closed Sunday Oct 25.";
+}catch(e){}
+</script>
+
+</body>
+</html>
