@@ -256,9 +256,9 @@ details[open] summary{margin-bottom:8px}
         <button type="button" id="c-l" aria-pressed="false">Lula</button>
       </div>
     </div>
-    <div class="chart"><svg id="chart" viewBox="0 0 640 300" role="img" aria-label="Valid-vote share by pollster, Oct 8 to 19"></svg>
+    <div class="chart"><svg id="chart" viewBox="0 0 640 300" role="img" aria-label="Valid-vote share in every runoff poll, with the polls average"></svg>
       <div class="legend" id="legend"></div></div>
-    <p class="note">Hover or tap a point to see both candidates. Lula gained in four of these five series since the first week after Oct 4. PoderData moved back toward Flávio on Oct 19.</p>
+    <p class="note">Every runoff poll since Oct 4 is a grey dot, and a thin line joins the polls from the same pollster. The thick line is the polls average: on each day, the average of every pollster’s latest poll released by then, so it moves as soon as a new poll comes out. Hover or tap any point for the details. The average has slipped from about 52% to about 51% for Flávio since the first week after Oct 4.</p>
     <h3 style="margin-top:10px">Betting market over time (Polymarket)</h3>
     <div class="chart"><svg id="pmchart" viewBox="0 0 640 280" role="img" aria-label="Polymarket chance of winning, Oct 1 to Oct 20"></svg>
       <div class="legend"><span><i style="background:var(--flavio)"></i>Flávio</span><span><i style="background:var(--lula)"></i>Lula</span></div></div>
@@ -432,7 +432,7 @@ const ERR=Object.fromEntries(FIRST.map(r=>[r.p,r.err]));
 const AVGERR=FIRST.reduce((s,r)=>s+r.err,0)/FIRST.length;
 const RUN=[
  ["AtlasIntel","Oct 19",51.1],["BTG/Nexus","Oct 19",50.3],["PoderData","Oct 19",52.0],
- ["Futura","Oct 19",50.4],["Ipespe","Oct 19",51.2],["Vox Brasil","Oct 18",49.0],
+ ["Futura","Oct 19",50.4],["Ipespe","Oct 17",51.2],["Vox Brasil","Oct 18",49.0],
  ["Gerp","Oct 20",53.0],["CNT/MDA","Oct 16",50.5],["Datafolha","Oct 15",51.0],
  ["Palver","Oct 15",50.5],["Quaest","Oct 14",51.1],
  ["Real Time Big Data","Oct 20",52.0],["Data Ranking","Oct 20",49.6],
@@ -441,8 +441,13 @@ const RUN=[
 const HIST={
  "AtlasIntel":[[9,52.8],[19,51.1]],"Datafolha":[[8,52.0],[15,51.0]],
  "BTG/Nexus":[[13,52.0],[19,50.3]],"PoderData":[[8,53.0],[12,51.0],[15,50.0],[19,52.0]],
- "Futura":[[13,51.8],[16,50.8],[19,50.4]]
+ "Futura":[[13,51.8],[16,50.8],[19,50.4]],
+ "Gerp":[[16,52.0],[20,53.0]],"Ipespe":[[10,52.7],[17,51.2]],
+ "DataTrends":[[11,53.1],[19,51.5]],"Vox Brasil":[[9,49.1],[18,49.0]]
 };
+// Every pollster's latest runoff poll is always on the chart, even if nobody added it to HIST.
+RUN.forEach(([p,d,f])=>{const day=+(String(d).match(/\d+/)||[0])[0];if(!day)return;
+  const s=HIST[p]||(HIST[p]=[]);if(!s.some(q=>q[0]===day))s.push([day,f]);s.sort((a,b)=>a[0]-b[0]);});
 const S={mode:"own",k:.5,cand:"f"};
 const f1=x=>x.toFixed(1), f2=x=>x.toFixed(2);
 const nf=n=>Math.round(n).toLocaleString("en-US");
@@ -874,28 +879,43 @@ const COLS=["var(--flavio)","var(--accent)","var(--lula)","var(--fg)","var(--mut
 function drawChart(){
   const svg=document.getElementById("chart"),W=cw(svg),H=300,L=40,R=58,T=16,B=34;
   svg.innerHTML="";svg.setAttribute("viewBox",`0 0 ${W} ${H}`);
-  const lo=S.cand==="f"?49:46, hi=S.cand==="f"?54:51;
-  const maxD=Math.max(20,...Object.values(HIST).flat().map(p=>p[0]));
-  const x=d=>L+(d-8)/(maxD-8)*(W-L-R), y=v=>T+(hi-v)/(hi-lo)*(H-T-B);
+  const lo=S.cand==="f"?48:45, hi=S.cand==="f"?55:52;
+  const all=Object.values(HIST).flat(), minD=Math.min(8,...all.map(p=>p[0])), maxD=Math.max(20,...all.map(p=>p[0]));
+  const x=d=>L+(d-minD)/(maxD-minD)*(W-L-R), y=v=>T+(hi-Math.max(lo,Math.min(hi,v)))/(hi-lo)*(H-T-B);
   const NS="http://www.w3.org/2000/svg";
   const el=(n,a)=>{const e=document.createElementNS(NS,n);for(const k in a)e.setAttribute(k,a[k]);svg.appendChild(e);return e};
+  const val=v=>S.cand==="f"?v:100-v, cc=S.cand==="f"?"var(--flavio)":"var(--lula)";
   for(let v=lo;v<=hi;v++){
     el("line",{x1:L,x2:W-R,y1:y(v),y2:y(v),stroke:"var(--line)","stroke-width":v===50?1.8:1,"stroke-dasharray":v===50?"":"2 4"});
     const t=el("text",{x:L-8,y:y(v)+4,"text-anchor":"end","font-size":11,fill:"var(--muted)","font-family":"IBM Plex Mono,monospace"});t.textContent=v+"%";
   }
-  (W<480?[8,12,16,20]:[8,10,12,14,16,18,20]).forEach(d=>{const t=el("text",{x:x(d),y:H-10,"text-anchor":"middle","font-size":11,fill:"var(--muted)","font-family":"IBM Plex Mono,monospace"});t.textContent="Oct "+d});
+  const ticks=[];for(let d=minD;d<=maxD;d+=(W<480?4:2))ticks.push(d);
+  ticks.forEach(d=>{const t=el("text",{x:x(d),y:H-10,"text-anchor":"middle","font-size":11,fill:"var(--muted)","font-family":"IBM Plex Mono,monospace"});t.textContent="Oct "+d});
   const t50=el("text",{x:W-R+6,y:y(50)+4,"font-size":11,fill:"var(--muted)"});t50.textContent="tie";
-  const leg=document.getElementById("legend");leg.innerHTML="";
-  Object.entries(HIST).forEach(([n,pts],i)=>{
-    const c=COLS[i], val=v=>S.cand==="f"?v:100-v;
-    el("polyline",{points:pts.map(p=>x(p[0])+","+y(val(p[1]))).join(" "),fill:"none",stroke:c,"stroke-width":2.2,"stroke-linejoin":"round"});
-    pts.forEach((p,j)=>{
-      el("circle",{cx:x(p[0]),cy:y(val(p[1])),r:j===pts.length-1?4.5:3.2,fill:c});
-      el("circle",{cx:x(p[0]),cy:y(val(p[1])),r:12,fill:"transparent",class:"hit",tabindex:0,
-        "data-tip":`<b>${n}</b> · Oct ${p[0]}<br>Flávio ${f1(p[1])}% (≈ ${mv(p[1])})<br>Lula ${f1(100-p[1])}% (≈ ${mv(100-p[1])})<br>${leadTxt(2*p[1]-100)} pts`,"data-html":"1"});
+  const tipP=(n,p)=>`<b>${n}</b> · Oct ${p[0]}<br>Flávio ${f1(p[1])}% (≈ ${mv(p[1])})<br>Lula ${f1(100-p[1])}% (≈ ${mv(100-p[1])})<br>${leadTxt(2*p[1]-100)} pts`;
+  Object.entries(HIST).forEach(([n,pts])=>{
+    if(pts.length>1)el("polyline",{points:pts.map(p=>x(p[0])+","+y(val(p[1]))).join(" "),fill:"none",stroke:"var(--muted)","stroke-opacity":.45,"stroke-width":1.3,"stroke-linejoin":"round"});
+    pts.forEach(p=>{
+      el("circle",{cx:x(p[0]),cy:y(val(p[1])),r:3,fill:"var(--muted)","fill-opacity":.7});
+      el("circle",{cx:x(p[0]),cy:y(val(p[1])),r:10,fill:"transparent",class:"hit",tabindex:0,"data-tip":tipP(n,p),"data-html":"1"});
     });
-    leg.insertAdjacentHTML("beforeend",`<span><i style="background:${c}"></i>${n}</span>`);
   });
+  // polls average: on each day, the average of every pollster's latest poll released by then
+  const avgPts=[];
+  for(let d=minD;d<=maxD;d++){
+    const lat=Object.values(HIST).map(s=>s.filter(p=>p[0]<=d).pop()).filter(Boolean);
+    if(lat.length>=3)avgPts.push([d,avg(lat.map(p=>p[1])),lat.length]);
+  }
+  el("polyline",{points:avgPts.map(p=>x(p[0])+","+y(val(p[1]))).join(" "),fill:"none",stroke:cc,"stroke-width":3.2,"stroke-linejoin":"round","stroke-linecap":"round"});
+  avgPts.forEach((p,j)=>{
+    const last=j===avgPts.length-1;
+    el("circle",{cx:x(p[0]),cy:y(val(p[1])),r:last?5:2.6,fill:cc});
+    el("circle",{cx:x(p[0]),cy:y(val(p[1])),r:9,fill:"transparent",class:"hit",tabindex:0,
+      "data-tip":`<b>Polls average</b> · Oct ${p[0]}<br>${p[2]} pollsters' latest polls<br>Flávio ${f1(p[1])}% · Lula ${f1(100-p[1])}%<br>${leadTxt(2*p[1]-100)} pts`,"data-html":"1"});
+    if(last){const t=el("text",{x:x(p[0])+8,y:y(val(p[1]))-8,"font-size":12,"font-weight":700,fill:cc});t.textContent=f1(val(p[1]))+"%";}
+  });
+  const n=Object.keys(HIST).length, np=all.length;
+  document.getElementById("legend").innerHTML=`<span><i style="background:${cc};height:4px"></i>Polls average</span><span><i style="background:var(--muted);opacity:.6"></i>Each pollster (${n} pollsters, ${np} polls) · hover for the name</span>`;
 }
 
 // ---------- tooltip ----------
