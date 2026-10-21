@@ -508,7 +508,8 @@ function render(){
       </ol>`;
 
   let h=`<thead><tr><th>Pollster</th><th>Poll<br><span class="dim">Flávio · Lula</span></th><th class="hide-sm">Its Oct 4 mistake</th><th>Moved<br><span class="dim">${kp}% of mistake</span></th><th>Adjusted<br><span class="dim">Flávio · Lula</span></th></tr></thead><tbody>`;
-  RUN.forEach(([p,d,fl])=>{
+  const day=d=>{const m=String(d).match(/(\d+)/);return m?+m[1]:0};
+  [...RUN].sort((a,b)=>day(b[1])-day(a[1])).forEach(([p,d,fl])=>{
     const ad=added(p), c=fl+ad, e=errFor(p);
     const math=`Flávio ${f1(fl)} ${ad>=0?"+":"−"} ${f1(Math.abs(ad))} = ${f1(c)}; Lula ${f1(100-fl)} ${ad>=0?"−":"+"} ${f1(Math.abs(ad))} = ${f1(100-c)} (≈ ${mv(c)} vs ${mv(100-c)} votes)`;
     h+=`<tr><td>${p} <span class="dim d" style="font-weight:400">${d}</span></td>
