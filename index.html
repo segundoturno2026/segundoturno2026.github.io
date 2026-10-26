@@ -166,7 +166,7 @@ details[open] summary{margin-bottom:8px}
 
 <div class="wrap">
   <header style="display:grid;gap:10px">
-    <div class="eyebrow">Lula vs Flávio Bolsonaro · runoff · updated <span id="updated">Sat Oct 24, 2026, 10:50 p.m. ET (final polls)</span></div>
+    <div class="eyebrow">Lula vs Flávio Bolsonaro · runoff · updated <span id="updated">Sun Oct 25, 2026, 9:15 p.m. ET (result)</span></div>
     <h1>Brazil Runoff Watch</h1>
     <p class="muted">Brazil picks its president on Sunday, Oct 25. This page collects every national runoff poll, checks how accurate each pollster was in the first round on Oct 4, works out the vote math from the real first-round count, and reads the online reaction to the Oct 18 debate. <span id="countdown"></span></p>
     <div class="key-term">
@@ -175,8 +175,21 @@ details[open] summary{margin-bottom:8px}
       <span><b>Lead:</b> the leader's share minus the other's. Flávio 51% and Lula 49% is a lead of 2 points.</span>
       <span class="note">Hover or tap any underlined number to see it in votes.</span>
     </div>
+    <div class="card" id="result" style="border:2px solid var(--lula)">
+      <h2>The runoff result: Lula wins</h2>
+      <div class="result">
+        <div class="cand"><span class="eyebrow">Lula (PT)</span><span class="pct l num">51.78%</span><span class="votes">64,217,873 votes</span></div>
+        <div class="cand"><span class="eyebrow">Flávio Bolsonaro (PL)</span><span class="pct f num">48.22%</span><span class="votes">59,806,787 votes</span></div>
+        <div class="cand"><span class="eyebrow">Lula's lead</span><span class="pct num">3.56 pts</span><span class="votes">4,411,086 votes</span></div>
+      </div>
+      <p class="note">TSE count with 99.95% of sections counted, Oct 25. Lula turned a 1.87-point first-round deficit into a 3.56-point win, the first comeback between rounds since redemocratization. Abstention fell to about 19.2% (about 30.5 million voters), from 21.08% on Oct 4, the opposite of what usually happens in runoffs. Blank 1.12%, null 2.12%.</p>
+      <h3>How each method did</h3>
+      <p class="note">Each method's final number on Saturday night, compared with Flávio's real 48.22%. Every one of them had Flávio winning. The closest was the plain average of the pollsters that were most accurate on Oct 4; our adjustment for the Oct 4 miss made things worse, because this time the polls underestimated Lula, not Flávio.</p>
+      <div class="tbl"><table><thead><tr><th>Method</th><th>Final call<br><span class="dim">Flávio · Lula</span></th><th>Off by<br><span class="dim">pts on Flávio</span></th></tr></thead><tbody><tr><td>Most accurate pollsters on Oct 4</td><td><span class="pair"><span class="f">50.8</span> · <span class="l">49.2</span></span><span class="dim"></span></td><td>2.6<span class="hide-sm"> too high on Flávio</span></td></tr><tr><td>Polls average (18 pollsters)</td><td><span class="pair"><span class="f">50.9</span> · <span class="l">49.1</span></span><span class="dim"></span></td><td>2.7<span class="hide-sm"> too high on Flávio</span></td></tr><tr><td>Vote math, typical turnout</td><td><span class="pair"><span class="f">51.4</span> · <span class="l">48.6</span></span><span class="dim"></span></td><td>3.2<span class="hide-sm"> too high on Flávio</span></td></tr><tr><td>Our projection</td><td><span class="pair"><span class="f">51.7</span> · <span class="l">48.3</span></span><span class="dim"> · 80% chance of winning</span></td><td>3.5<span class="hide-sm"> too high on Flávio</span></td></tr><tr><td>Polls adjusted for the Oct 4 miss (50%)</td><td><span class="pair"><span class="f">51.9</span> · <span class="l">48.1</span></span><span class="dim"></span></td><td>3.6<span class="hide-sm"> too high on Flávio</span></td></tr><tr><td>Sum of regions</td><td><span class="pair"><span class="f">52.2</span> · <span class="l">47.8</span></span><span class="dim"></span></td><td>3.9<span class="hide-sm"> too high on Flávio</span></td></tr><tr><td>Polymarket, Sat night</td><td class="txt">Flávio 83.8% to win</td><td class="txt">Wrong winner</td></tr></tbody><tfoot><tr><td>Real result</td><td><span class="pair"><span class="f">48.2</span> · <span class="l">51.8</span></span></td><td></td></tr></tfoot></table></div>
+      <p class="note">Everything below is the page as it stood before the vote, kept for the record.</p>
+    </div>
     <div class="card proj" id="projection">
-      <h2>Our projection</h2>
+      <h2>Our projection (before the vote)</h2>
       <div class="projtop">
         <div><span class="eyebrow">Flávio</span><span class="big f num" id="pj-f"></span><span class="note" id="pj-fv"></span></div>
         <div><span class="eyebrow">Lula</span><span class="big l num" id="pj-l"></span><span class="note" id="pj-lv"></span></div>
